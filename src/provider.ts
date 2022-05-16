@@ -35,7 +35,8 @@ export class HyperProvider {
           reject(e);
         };
         this.ws.onclose = (e) => {
-          console.log('close');
+          // console.log('close');
+          reject(e);
         };
         this.ws.onmessage = (messageEvent) => {
           const data = messageEvent.data as string;
@@ -92,8 +93,7 @@ export class HyperProvider {
   async getAddress():Promise<string>{
     if(this.address) return this.address;
     const publicKey = this.wallet.getPublicKey();
-    const addresses = await (this.send('account_getSm2AddressBatch',[publicKey]) as Promise<string[]>);
-    return addresses[0];
+    return this.send('account_getSm2Address',[publicKey]);
   }
   
   getBalance(address: string[]): Promise<any> {
@@ -150,6 +150,9 @@ export class HyperProvider {
       // Hangup
       // See: https://developer.mozilla.org/en-US/docs/Web/API/CloseEvent#Status_codes
       this.ws.close(1000);
+      // return new Promise<void>((resolve, reject) => {
+      //   resolve()
+      // })
     }
   }
 }
