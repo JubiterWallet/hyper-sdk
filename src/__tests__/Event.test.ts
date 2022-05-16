@@ -1,6 +1,4 @@
-import { HyperEvent, HyperTxEvent } from '../Event';
-import {HyperProvider} from "../provider";
-import {newWalletFromMnemonic} from "../wallet";
+import {HyperEvent, HyperTxEvent,HyperProvider,newWalletFromMnemonic} from "../index";
 test('My Event', () => {
     const wallet = newWalletFromMnemonic(
       'gauge hole clog property soccer idea cycle stadium utility slice hold chief',
