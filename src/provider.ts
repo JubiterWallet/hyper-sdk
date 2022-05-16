@@ -92,10 +92,10 @@ export class HyperProvider {
   async getAddress():Promise<string>{
     if(this.address) return this.address;
     const publicKey = this.wallet.getPublicKey();
-    const addresses = await (this.send('account_getSm2Address',[publicKey]) as Promise<string[]>);
+    const addresses = await (this.send('account_getSm2AddressBatch',[publicKey]) as Promise<string[]>);
     return addresses[0];
   }
-
+  
   getBalance(address: string[]): Promise<any> {
     return this.send('account_getBalance', address);
   }
