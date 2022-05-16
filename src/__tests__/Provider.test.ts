@@ -1,5 +1,4 @@
-import { HyperProvider } from '../provider';
-import { newWalletFromMnemonic } from '../wallet';
+import { HyperProvider,newWalletFromMnemonic } from '../index';
 test('My Greeter', async () => {
   const wallet = newWalletFromMnemonic(
     'gauge hole clog property soccer idea cycle stadium utility slice hold chief',
