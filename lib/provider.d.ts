@@ -1,4 +1,3 @@
-import { WebSocket } from "ws";
 import { EventType, HyperEvent, Listener } from "./event";
 import { HyperWallet } from "./wallet";
 export declare type InflightRequest = {
