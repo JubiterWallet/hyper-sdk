@@ -1,4 +1,4 @@
-//import {WebSocket}  from "ws";
+// import {WebSocket}  from "ws";
 import {EventType, HyperEvent, Listener} from "./event";
 import { HyperWallet } from "./wallet";
 
@@ -26,19 +26,19 @@ export class HyperProvider {
     return new Promise((resolve, reject) => {
       if (this.ws == undefined) {
         this.ws = new WebSocket(this.url);
-        this.ws.onopen = (e) => {
+        this.ws.onopen = (e:any) => {
           console.log('open successed');
           resolve(e);
         };
-        this.ws.onerror = (e) => {
+        this.ws.onerror = (e:any) => {
           console.log('open failed');
           reject(e);
         };
-        this.ws.onclose = (e) => {
+        this.ws.onclose = (e:any) => {
           // console.log('close');
           reject(e);
         };
-        this.ws.onmessage = (messageEvent) => {
+        this.ws.onmessage = (messageEvent:any) => {
           const data = messageEvent.data as string;
           const result = JSON.parse(data);
           console.log(data);
@@ -50,10 +50,17 @@ export class HyperProvider {
             if (result.result !== undefined) {
               request.callback(null, result.result);
             } else {
+              //code message
+              if(result?.code != 0) {
+                if(result?.code==-32009){
+                  return  request.callback(null, 0);
+                }
+              }
               let error: Error | null = null;
-              if (result.error) {
+              if (result.error ) {
                 error = new Error(result.error.message || 'unknown error');
-              } else {
+              } 
+              else {
                 error = new Error('unknown error');
               }
               request.callback(error, undefined);
