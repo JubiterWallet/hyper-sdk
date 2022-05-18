@@ -1,7 +1,8 @@
-// import {WebSocket}  from "ws";
+import {WebSocket}  from "ws";
 import {EventType, HyperEvent, Listener} from "./event";
 import { HyperWallet } from "./wallet";
-
+import { Transaction } from "./transaction";
+import { METHOD_ACCOUNT_GET_SM2_ADDRESS , METHOD_ACCOUNT_GET_BALANCE , METHOD_TX_GET_UNSIGN_DATA,METHOD_TX_SEND } from "./constant";
 let NextId = 1;
 export type InflightRequest = {
   callback: (error: Error|null, result: any) => void;
@@ -100,28 +101,32 @@ export class HyperProvider {
   async getAddress():Promise<string>{
     if(this.address) return this.address;
     const publicKey = this.wallet.getPublicKey();
-    return this.send('account_getSm2Address',[publicKey]);
+    this.address = await (this.send(METHOD_ACCOUNT_GET_SM2_ADDRESS,[publicKey]) as Promise<string>);
+    return this.address
   }
   
   getBalance(address: string[]): Promise<any> {
-    return this.send('account_getBalance', address);
+    return this.send(METHOD_ACCOUNT_GET_BALANCE, address);
   }
 
   //此接口需要组织各式各样的交易，待细化
-  async buildUnsignedTx():Promise<string>{
+  async buildUnsignedTx(unsignedTx: Transaction,txType?: string,):Promise<string>{
     //需要调用RPC接口组织待签名交易
-    return "aabbccdd";
+    if(txType){
+      return this.send(METHOD_TX_GET_UNSIGN_DATA, [unsignedTx]);
+    }
+    return this.send(METHOD_TX_GET_UNSIGN_DATA, [unsignedTx]);
   }
 
   async signTx(msg:string):Promise<string>{
     const sig =  this.wallet.sign(msg);
     //需要调用RPC接口组织Raw交易
-    return sig + "11223344";
+    return sig;
   }
 
-  async broadcastTx(raw:string):Promise<string>{
+  async broadcastTx(tx:Transaction):Promise<string>{
     //需要调用RPC接口广播交易
-    return "11223344"; //txid
+    return this.send(METHOD_TX_SEND, [{"unsignData":tx.hex,"signature":tx.signature,"async":false}]); //txid
   }
 
   subscribe(type: EventType, tag: string, listener: Listener, once: boolean, ...args: Array<any>) :void{
@@ -157,9 +162,6 @@ export class HyperProvider {
       // Hangup
       // See: https://developer.mozilla.org/en-US/docs/Web/API/CloseEvent#Status_codes
       this.ws.close(1000);
-      // return new Promise<void>((resolve, reject) => {
-      //   resolve()
-      // })
     }
   }
 }
