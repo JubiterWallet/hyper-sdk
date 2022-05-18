@@ -1,0 +1,14 @@
+export declare const METHOD_ACCOUNT_GET_SM2_ADDRESS = "account_getSm2Address";
+export declare const METHOD_ACCOUNT_GET_BALANCE = "account_getBalance";
+export declare const METHOD_TX_GET_UNSIGN_DATA = "tx_getUnsignData";
+export declare const METHOD_TX_SEND = "tx_sendTx";
+export declare const TX_OPTIONAL_TYPE_EVM = "EVM";
+export declare const TX_OPTIONAL_TYPE_HVM = "HVM";
+export declare const TX_OPTIONAL_TYPE_TRANSFER = "TRANSFER";
+export declare const TX_OPTIONAL_FIELD_VALUE = "value";
+export declare const TX_OPTIONAL_FIELD_TYPE = "type";
+export declare const TX_OPTIONAL_FIELD_SIGNATURE = "signature";
+export declare const TX_OPTIONAL_FIELD_EXTRA = "extra";
+export declare const TX_OPTIONAL_FIELD_EXTRA_ID_64 = "extraIdInt64";
+export declare const TX_OPTIONAL_FIELD_EXTRA_ID_STRING = "extraIdString";
+export declare const TX_OPTIONAL_FIELD_PAYLOAD = "payload";
