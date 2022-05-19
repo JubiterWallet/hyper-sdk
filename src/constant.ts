@@ -14,3 +14,5 @@ export const TX_OPTIONAL_FIELD_EXTRA = "extra";
 export const TX_OPTIONAL_FIELD_EXTRA_ID_64 = "extraIdInt64"
 export const TX_OPTIONAL_FIELD_EXTRA_ID_STRING = "extraIdString"
 export const TX_OPTIONAL_FIELD_PAYLOAD = "payload";
+export const TX_OPTIONAL_FIELD_OP_CODE = "opCode";
+export const TX_OPTIONAL_FIELD_HASH = "hash";
