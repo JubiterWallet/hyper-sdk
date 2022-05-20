@@ -22,7 +22,9 @@ export declare class HyperProvider {
     getAddress(): Promise<string>;
     getBalance(address: string[]): Promise<any>;
     buildUnsignedTx(unsignedTx: Transaction, txType?: string): Promise<string>;
-    signTx(msg: string): Promise<string>;
+    signTx(txRaw: string): Promise<string>;
+    signMessage(msg: string): Promise<string>;
+    verifyMessage(msg: string, signature: string): Promise<boolean>;
     broadcastTx(tx: Transaction): Promise<string>;
     subscribe(type: EventType, tag: string, listener: Listener, once: boolean, ...args: Array<any>): void;
     unsubscribe(tag: string): void;

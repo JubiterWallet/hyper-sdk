@@ -1,11 +1,11 @@
 // import {WebSocket}  from "ws";
-import {EventType, HyperEvent, Listener} from "./event";
+import { EventType, HyperEvent, Listener } from "./event";
 import { HyperWallet } from "./wallet";
 import { Transaction } from "./transaction";
-import { METHOD_ACCOUNT_GET_SM2_ADDRESS , METHOD_ACCOUNT_GET_BALANCE , METHOD_TX_GET_UNSIGN_DATA,METHOD_TX_SEND } from "./constant";
+import { METHOD_ACCOUNT_GET_SM2_ADDRESS, METHOD_ACCOUNT_GET_BALANCE, METHOD_TX_GET_UNSIGN_DATA, METHOD_TX_SEND } from "./constant";
 let NextId = 1;
 export type InflightRequest = {
-  callback: (error: Error|null, result: any) => void;
+  callback: (error: Error | null, result: any) => void;
   payload: string;
 };
 
@@ -13,10 +13,10 @@ export class HyperProvider {
   ws?: WebSocket;
   url: string;
   requests: { [name: string]: InflightRequest };
-  events: {[tag:string]:HyperEvent};
-  wallet:HyperWallet;
-  address:string|null;
-  constructor(url: string,wallet:HyperWallet) {
+  events: { [tag: string]: HyperEvent };
+  wallet: HyperWallet;
+  address: string | null;
+  constructor(url: string, wallet: HyperWallet) {
     this.requests = {};
     this.events = {};
     this.url = url;
@@ -27,19 +27,19 @@ export class HyperProvider {
     return new Promise((resolve, reject) => {
       if (this.ws == undefined) {
         this.ws = new WebSocket(this.url);
-        this.ws.onopen = (e:any) => {
+        this.ws.onopen = (e: any) => {
           console.log('open successed');
           resolve(e);
         };
-        this.ws.onerror = (e:any) => {
+        this.ws.onerror = (e: any) => {
           console.log('open failed');
           reject(e);
         };
-        this.ws.onclose = (e:any) => {
+        this.ws.onclose = (e: any) => {
           // console.log('close');
           reject(e);
         };
-        this.ws.onmessage = (messageEvent:any) => {
+        this.ws.onmessage = (messageEvent: any) => {
           const data = messageEvent.data as string;
           const result = JSON.parse(data);
           console.log(data);
@@ -52,15 +52,15 @@ export class HyperProvider {
               request.callback(null, result.result);
             } else {
               //code message
-              if(result?.code != 0) {
-                if(result?.code==-32009){
-                  return  request.callback(null, 0);
+              if (result?.code != 0) {
+                if (result?.code == -32009) {
+                  return request.callback(null, 0);
                 }
               }
               let error: Error | null = null;
-              if (result.error ) {
+              if (result.error) {
                 error = new Error(result.error.message || 'unknown error');
-              } 
+              }
               else {
                 error = new Error('unknown error');
               }
@@ -98,45 +98,51 @@ export class HyperProvider {
     });
   }
 
-  async getAddress():Promise<string>{
-    if(this.address) return this.address;
+  async getAddress(): Promise<string> {
+    if (this.address) return this.address;
     const publicKey = this.wallet.getPublicKey();
-    this.address = await (this.send(METHOD_ACCOUNT_GET_SM2_ADDRESS,[publicKey]) as Promise<string>);
+    this.address = await (this.send(METHOD_ACCOUNT_GET_SM2_ADDRESS, [publicKey]) as Promise<string>);
     return this.address
   }
-  
-  getBalance(address: string[]): Promise<any> {
+
+  async getBalance(address: string[]): Promise<any> {
     return this.send(METHOD_ACCOUNT_GET_BALANCE, address);
   }
 
   //此接口需要组织各式各样的交易，待细化
-  async buildUnsignedTx(unsignedTx: Transaction,txType?: string,):Promise<string>{
+  async buildUnsignedTx(unsignedTx: Transaction, txType?: string,): Promise<string> {
     //需要调用RPC接口组织待签名交易
-    if(txType){
+    if (txType) {
       return this.send(METHOD_TX_GET_UNSIGN_DATA, [unsignedTx]);
     }
     return this.send(METHOD_TX_GET_UNSIGN_DATA, [unsignedTx]);
   }
 
-  async signTx(msg:string):Promise<string>{
-    const sig =  this.wallet.sign(msg);
-    //需要调用RPC接口组织Raw交易
-    return sig;
+  async signTx(txRaw: string): Promise<string> {
+    return this.wallet.sign(txRaw);;
   }
 
-  async broadcastTx(tx:Transaction):Promise<string>{
+  async signMessage(msg: string): Promise<string> {
+    return this.wallet.sign(msg);
+  }
+
+  async verifyMessage(msg: string, signature: string): Promise<boolean> {
+    return this.wallet.verify(msg, signature);
+  }
+
+  async broadcastTx(tx: Transaction): Promise<string> {
     //需要调用RPC接口广播交易
-    return this.send(METHOD_TX_SEND, [{"unsignData":tx.hex,"signature":tx.signature,"async":false}]); //txid
+    return this.send(METHOD_TX_SEND, [{ "unsignData": tx.hex, "signature": tx.signature, "async": false }]); //txid
   }
 
-  subscribe(type: EventType, tag: string, listener: Listener, once: boolean, ...args: Array<any>) :void{
-    let event = new HyperEvent(type, tag, listener, once,this);
+  subscribe(type: EventType, tag: string, listener: Listener, once: boolean, ...args: Array<any>): void {
+    let event = new HyperEvent(type, tag, listener, once, this);
     event.on(args);
     this.events[tag] = event;
     return;
   }
 
-  unsubscribe(tag:string){
+  unsubscribe(tag: string) {
     const event = this.events[tag];
     event.clear();
     delete this.events[tag];

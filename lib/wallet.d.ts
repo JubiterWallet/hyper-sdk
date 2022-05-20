@@ -5,6 +5,7 @@ export declare class HyperWallet {
     sm2: SM2;
     constructor(privateKey: string);
     sign(msg: string): string;
+    verify(msg: string, signature: string): boolean;
     getPublicKey(): string;
 }
 export declare function newWalletFromPrivateKey(privateKey: string): HyperWallet;
