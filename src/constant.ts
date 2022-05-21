@@ -3,6 +3,16 @@ export const METHOD_ACCOUNT_GET_SM2_ADDRESS = "account_getSm2Address";
 export const METHOD_ACCOUNT_GET_BALANCE = "account_getBalance";
 export const METHOD_TX_GET_UNSIGN_DATA = "tx_getUnsignData";
 export const METHOD_TX_SEND = "tx_sendTx";
+export const METHOD_TX_GET_TX_BY_HASH = "tx_getTxByHash";
+export const METHOD_BLOCK_GET_LATEST_BLOCK = "block_getLatestBlock";
+export const METHOD_CONTRACT_GET_INPUT_DATA = "contract_getInputData";
+export const METHOD_NODE_GET = "node_getNodes";
+
+export const EVENT_SUB_TX = "tx";
+export const EVENT_SUB_BLOCK = "block";
+export const EVENT_SUB_NETWORK = "network";
+export const EVENT_SUB_ADDRESS = "address";
+
 //tx optional fields
 export const TX_OPTIONAL_TYPE_EVM = "EVM";
 export const TX_OPTIONAL_TYPE_HVM = "HVM";
