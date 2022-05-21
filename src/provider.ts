@@ -1,11 +1,12 @@
-// import {WebSocket}  from "ws";
-import { EventType, HyperEvent, Listener } from "./event";
+import { WebSocket } from "ws";
+import { EventType, HyperEvent, Listener, HyperTxEvent } from "./event";
 import { HyperWallet } from "./wallet";
 import { Transaction } from "./transaction";
-import { METHOD_ACCOUNT_GET_SM2_ADDRESS, METHOD_ACCOUNT_GET_BALANCE, METHOD_TX_GET_UNSIGN_DATA, METHOD_TX_SEND } from "./constant";
+import { PayloadParams } from "./Contract";
+import { METHOD_ACCOUNT_GET_SM2_ADDRESS, METHOD_ACCOUNT_GET_BALANCE, METHOD_TX_GET_UNSIGN_DATA, METHOD_TX_SEND, METHOD_CONTRACT_GET_INPUT_DATA, EVENT_SUB_TX } from "./constant";
 let NextId = 1;
 export type InflightRequest = {
-  callback: (error: Error | null, result: any) => void;
+  callback: (error: any, result: any) => void;
   payload: string;
 };
 
@@ -13,7 +14,7 @@ export class HyperProvider {
   ws?: WebSocket;
   url: string;
   requests: { [name: string]: InflightRequest };
-  events: { [tag: string]: HyperEvent };
+  events: { [tag: string]: HyperTxEvent | HyperEvent };
   wallet: HyperWallet;
   address: string | null;
   constructor(url: string, wallet: HyperWallet) {
@@ -42,7 +43,6 @@ export class HyperProvider {
         this.ws.onmessage = (messageEvent: any) => {
           const data = messageEvent.data as string;
           const result = JSON.parse(data);
-          console.log(data);
           if (result.id != null) {
             const id = String(result.id);
             const request = this.requests[id];
@@ -52,19 +52,17 @@ export class HyperProvider {
               request.callback(null, result.result);
             } else {
               //code message
-              if (result?.code != 0) {
-                if (result?.code == -32009) {
-                  return request.callback(null, 0);
-                }
+              if (result.code != 0) {
+                return request.callback(undefined, { error: result });
               }
-              let error: Error | null = null;
-              if (result.error) {
-                error = new Error(result.error.message || 'unknown error');
-              }
-              else {
-                error = new Error('unknown error');
-              }
-              request.callback(error, undefined);
+              // let error: Error | null = null;
+              // if (result.error) {
+              //   error = new Error(result.error.message || 'unknown error');
+              // }
+              // else {
+              //   error = new Error('unknown error');
+              // }
+              request.callback(undefined, { error: result.error.message || 'unknown error' });
             }
           }
         };
@@ -110,7 +108,7 @@ export class HyperProvider {
   }
 
   //此接口需要组织各式各样的交易，待细化
-  async buildUnsignedTx(unsignedTx: Transaction, txType?: string,): Promise<string> {
+  async buildUnsignedTx(unsignedTx: Transaction, txType?: string): Promise<string> {
     //需要调用RPC接口组织待签名交易
     if (txType) {
       return this.send(METHOD_TX_GET_UNSIGN_DATA, [unsignedTx]);
@@ -135,11 +133,16 @@ export class HyperProvider {
     return this.send(METHOD_TX_SEND, [{ "unsignData": tx.hex, "signature": tx.signature, "async": false }]); //txid
   }
 
-  subscribe(type: EventType, tag: string, listener: Listener, once: boolean, ...args: Array<any>): void {
-    let event = new HyperEvent(type, tag, listener, once, this);
-    event.on(args);
-    this.events[tag] = event;
-    return;
+  async buildContractPayload(payload: PayloadParams): Promise<string> {
+    return this.send(METHOD_CONTRACT_GET_INPUT_DATA, [payload]);
+  }
+
+  subscribe(type: EventType, tag: string, listener: Listener, once: boolean, ...args: Array<any>) {
+    if (type === EVENT_SUB_TX) {
+      let event = new HyperTxEvent(type, tag, listener, once, this);
+      event.on(args);
+      this.events[tag] = event;
+    }
   }
 
   unsubscribe(tag: string) {
