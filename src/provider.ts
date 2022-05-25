@@ -2,8 +2,11 @@
 import { EventType, HyperEvent, Listener, HyperTxEvent } from "./event";
 import { HyperWallet } from "./wallet";
 import { Transaction } from "./transaction";
-import { PayloadParams } from "./Contract";
-import { METHOD_ACCOUNT_GET_SM2_ADDRESS, METHOD_ACCOUNT_GET_BALANCE, METHOD_TX_GET_UNSIGN_DATA, METHOD_TX_SEND, METHOD_CONTRACT_GET_INPUT_DATA, EVENT_SUB_TX } from "./constant";
+import { PayloadParams } from "./contract";
+import {
+  METHOD_ACCOUNT_GET_SM2_ADDRESS, METHOD_ACCOUNT_GET_BALANCE, METHOD_TX_GET_UNSIGN_DATA, METHOD_TX_SEND,
+  METHOD_CONTRACT_GET_INPUT_DATA, EVENT_SUB_TX, METHOD_DID_GET_ADDRESS, ChainIDType, METHOD_DID_GET_REGISTER_UNSIGN_DATA, METHOD_DID_SEND_REGISTER_TX
+} from "./constant";
 let NextId = 1;
 export type InflightRequest = {
   callback: (error: any, result: any) => void;
@@ -17,12 +20,14 @@ export class HyperProvider {
   events: { [tag: string]: HyperTxEvent | HyperEvent };
   wallet: HyperWallet;
   address: string | null;
+  didAddress: string | null;
   constructor(url: string, wallet: HyperWallet) {
     this.requests = {};
     this.events = {};
     this.url = url;
     this.wallet = wallet;
     this.address = null;
+    this.didAddress = null;
   }
   open(): Promise<any> {
     return new Promise((resolve, reject) => {
@@ -103,6 +108,21 @@ export class HyperProvider {
     return this.address
   }
 
+  async getDIDAddress(): Promise<string> {
+    if (this.didAddress) return this.didAddress;
+    let publicKey = this.wallet.getPublicKey();
+    let didAddress = await (this.send(METHOD_DID_GET_ADDRESS, [publicKey]) as Promise<string>);
+    this.didAddress = didAddress;
+    return this.didAddress;
+  }
+
+  async registerDID(): Promise<string> {
+    let publicKey = this.wallet.getPublicKey();
+    let unsignData = await (this.send(METHOD_DID_GET_REGISTER_UNSIGN_DATA, [publicKey]) as Promise<string>);
+    let signature = await this.wallet.sign(unsignData);
+    return this.send(METHOD_DID_SEND_REGISTER_TX, [{ "unsignData": unsignData, "signature": signature, "async": false }]); 
+  }
+
   async getBalance(address: string[]): Promise<any> {
     return this.send(METHOD_ACCOUNT_GET_BALANCE, address);
   }
@@ -117,7 +137,7 @@ export class HyperProvider {
   }
 
   async signTx(txRaw: string): Promise<string> {
-    return this.wallet.sign(txRaw);;
+    return this.wallet.sign(txRaw);
   }
 
   async signMessage(msg: string): Promise<string> {
