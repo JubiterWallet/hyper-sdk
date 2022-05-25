@@ -1,5 +1,5 @@
 import { SM2 } from "gm-ts";
-import { ec ,SignatureInput} from 'elliptic';
+import { ec, SignatureInput } from 'elliptic';
 import { mnemonicToSeedSync } from 'bip39';
 
 export class HyperWallet {
@@ -16,7 +16,7 @@ export class HyperWallet {
   }
 
   verify(msg: string, signature: string): boolean {
-    return this.sm2.verify(Buffer.from(msg, "hex"), Buffer.from(signature,"hex") , this.keyPair);
+    return this.sm2.verify(Buffer.from(msg, "hex"), Buffer.from(signature, "hex"), this.keyPair);
   }
 
   getPublicKey(): string {
@@ -32,4 +32,8 @@ export function newWalletFromMnemonic(mnemonic: string) {
   const seed = mnemonicToSeedSync(mnemonic);
   const privateKey = seed.slice(0, 32);
   return new HyperWallet(privateKey.toString("hex"));
+}
+
+export function didAddressToHex(didAddress: string): string {
+  return Buffer.from(didAddress).toString("hex");
 }
