@@ -1,5 +1,5 @@
 import { SM2 } from "gm-ts";
-import { ec, SignatureInput } from 'elliptic';
+import { ec } from 'elliptic';
 import { mnemonicToSeedSync } from 'bip39';
 
 export class HyperWallet {

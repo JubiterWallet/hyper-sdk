@@ -62,15 +62,21 @@ test('My Provider', async () => {
 // })
 
 test('Provider registerDid  ', async () => {
-    // const wallet = newWalletFromMnemonic(
-    //     'gauge hole clog property soccer idea cycle stadium utility slice hold chief',
-    // );
-    // const p = new HyperProvider('ws://192.168.4.196:6066/ws/v1/1111111', wallet);
-    // await p.open();
-    // let hash = await p.registerDID();
-    // console.log("registerDid hash ----------->", hash);
-    // let didAddress = await p.getDIDAddress();
-    // console.log("didAddress----------->", didAddress);
-    // console.log("didAddressToHex----------->", didAddressToHex(didAddress));
-    // await p.destroy();
+    const wallet = newWalletFromMnemonic(
+        'gauge hole clog property soccer idea cycle stadium utility slice hold chief',
+    );
+    const p = new HyperProvider('ws://192.168.4.196:6066/ws/v1/1111111', wallet);
+    await p.open();
+    let chainId = await p.getChainId();
+    console.log("chainId----------->", chainId);
+    let didAddress = await p.getDIDAddress();
+    console.log("didAddress----------->", didAddress);
+    let didDocument = await p.getDIDDocument(didAddress);
+    console.log("didDocument----------->", didDocument);
+    let hash = await p.registerDID();
+    console.log("registerDid hash ----------->", hash);
+    didDocument = await p.getDIDDocument(didAddress);
+    console.log("didDocument----------->", didDocument);
+    console.log("didAddressToHex----------->", didAddressToHex(didAddress));
+    await p.destroy();
 })
