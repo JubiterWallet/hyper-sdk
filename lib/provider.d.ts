@@ -1,3 +1,4 @@
+import { WebSocket } from "ws";
 import { EventType, HyperEvent, Listener, HyperTxEvent } from "./event";
 import { HyperWallet } from "./wallet";
 import { Transaction } from "./transaction";
@@ -24,6 +25,8 @@ export declare class HyperProvider {
     getAddress(): Promise<string>;
     getDIDAddress(): Promise<string>;
     registerDID(): Promise<string>;
+    getDIDDocument(didAddress: string): Promise<string>;
+    getChainId(): Promise<string>;
     getBalance(address: string[]): Promise<any>;
     buildUnsignedTx(unsignedTx: Transaction, txType?: string): Promise<string>;
     signTx(txRaw: string): Promise<string>;
