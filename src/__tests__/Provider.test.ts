@@ -62,16 +62,15 @@ test('My Provider', async () => {
 // })
 
 test('Provider registerDid  ', async () => {
-    const wallet = newWalletFromMnemonic(
-        'gauge hole clog property soccer idea cycle stadium utility slice hold chief',
-    );
-    const p = new HyperProvider('ws://192.168.4.196:6066/ws/v1/1111111', wallet);
-    await p.open();
-    let hash = await p.registerDID();
-    console.log("registerDid hash ----------->", hash);
-    let didAddress = await p.getDIDAddress();
-    console.log("didAddress----------->", didAddress);
-    console.log("didAddressToHex----------->", didAddressToHex(didAddress));
-    await p.destroy();
-    // expect(payload).toEqual("0xac9023630000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000047465737400000000000000000000000000000000000000000000000000000000")
+    // const wallet = newWalletFromMnemonic(
+    //     'gauge hole clog property soccer idea cycle stadium utility slice hold chief',
+    // );
+    // const p = new HyperProvider('ws://192.168.4.196:6066/ws/v1/1111111', wallet);
+    // await p.open();
+    // let hash = await p.registerDID();
+    // console.log("registerDid hash ----------->", hash);
+    // let didAddress = await p.getDIDAddress();
+    // console.log("didAddress----------->", didAddress);
+    // console.log("didAddressToHex----------->", didAddressToHex(didAddress));
+    // await p.destroy();
 })
