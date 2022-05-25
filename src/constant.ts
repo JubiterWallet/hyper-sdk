@@ -10,7 +10,9 @@ export const METHOD_NODE_GET = "node_getNodes";
 
 export const METHOD_DID_GET_ADDRESS = "did_getDIDAddress";
 export const METHOD_DID_GET_REGISTER_UNSIGN_DATA = "did_getRegisterUnsignData";
-export const METHOD_DID_SEND_REGISTER_TX = "did_sendRegisterTx"
+export const METHOD_DID_SEND_REGISTER_TX = "did_sendRegisterTx";
+export const METHOD_DID_GET_CHAIN_ID = "did_getChainId";
+export const METHOD_DID_GET_DOCUMENT = "did_getDIDDocument";
 
 export const EVENT_SUB_TX = "tx";
 export const EVENT_SUB_BLOCK = "block";
