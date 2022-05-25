@@ -6,6 +6,9 @@ export declare const METHOD_TX_GET_TX_BY_HASH = "tx_getTxByHash";
 export declare const METHOD_BLOCK_GET_LATEST_BLOCK = "block_getLatestBlock";
 export declare const METHOD_CONTRACT_GET_INPUT_DATA = "contract_getInputData";
 export declare const METHOD_NODE_GET = "node_getNodes";
+export declare const METHOD_DID_GET_ADDRESS = "did_getDIDAddress";
+export declare const METHOD_DID_GET_REGISTER_UNSIGN_DATA = "did_getRegisterUnsignData";
+export declare const METHOD_DID_SEND_REGISTER_TX = "did_sendRegisterTx";
 export declare const EVENT_SUB_TX = "tx";
 export declare const EVENT_SUB_BLOCK = "block";
 export declare const EVENT_SUB_NETWORK = "network";
@@ -22,3 +25,6 @@ export declare const TX_OPTIONAL_FIELD_EXTRA_ID_STRING = "extraIdString";
 export declare const TX_OPTIONAL_FIELD_PAYLOAD = "payload";
 export declare const TX_OPTIONAL_FIELD_OP_CODE = "opCode";
 export declare const TX_OPTIONAL_FIELD_HASH = "hash";
+export declare enum ChainIDType {
+    "RedCave" = 0
+}

@@ -10,3 +10,4 @@ export declare class HyperWallet {
 }
 export declare function newWalletFromPrivateKey(privateKey: string): HyperWallet;
 export declare function newWalletFromMnemonic(mnemonic: string): HyperWallet;
+export declare function didAddressToHex(didAddress: string): string;

@@ -1,7 +1,7 @@
 import { EventType, HyperEvent, Listener, HyperTxEvent } from "./event";
 import { HyperWallet } from "./wallet";
 import { Transaction } from "./transaction";
-import { PayloadParams } from "./Contract";
+import { PayloadParams } from "./contract";
 export declare type InflightRequest = {
     callback: (error: any, result: any) => void;
     payload: string;
@@ -17,10 +17,13 @@ export declare class HyperProvider {
     };
     wallet: HyperWallet;
     address: string | null;
+    didAddress: string | null;
     constructor(url: string, wallet: HyperWallet);
     open(): Promise<any>;
     send(method: string, params?: Array<any>): Promise<any>;
     getAddress(): Promise<string>;
+    getDIDAddress(): Promise<string>;
+    registerDID(): Promise<string>;
     getBalance(address: string[]): Promise<any>;
     buildUnsignedTx(unsignedTx: Transaction, txType?: string): Promise<string>;
     signTx(txRaw: string): Promise<string>;
