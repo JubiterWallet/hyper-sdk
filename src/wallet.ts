@@ -12,7 +12,7 @@ export class HyperWallet {
 
   sign(msg: string) {
     const sig = this.sm2.sign(hexToArray(msg), this.keyPair);
-    return sig.toDER("hex");
+    return this.fromateSM2Signature(sig.toDER("hex"));
   }
 
   verify(msg: string, signature: string): boolean {
@@ -21,6 +21,10 @@ export class HyperWallet {
 
   getPublicKey(): string {
     return this.keyPair.getPublic("hex").toString();
+  }
+
+  fromateSM2Signature(signature: string): string {
+    return "01" + this.getPublicKey() + signature;
   }
 }
 
@@ -47,7 +51,3 @@ export function hexToArray(hexString: string) {
   }
   return byte;
 };
-
-
-
-
