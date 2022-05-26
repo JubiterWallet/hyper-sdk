@@ -1,4 +1,3 @@
-import { WebSocket } from "ws";
 import { EventType, HyperEvent, Listener, HyperTxEvent } from "./event";
 import { HyperWallet } from "./wallet";
 import { Transaction } from "./transaction";
