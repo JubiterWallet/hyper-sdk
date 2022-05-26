@@ -11,12 +11,12 @@ export class HyperWallet {
   }
 
   sign(msg: string) {
-    const sig = this.sm2.sign(Buffer.from(msg, "hex"), this.keyPair);
+    const sig = this.sm2.sign(hexToArray(msg), this.keyPair);
     return sig.toDER("hex");
   }
 
   verify(msg: string, signature: string): boolean {
-    return this.sm2.verify(Buffer.from(msg, "hex"), Buffer.from(signature, "hex"), this.keyPair);
+    return this.sm2.verify(hexToArray(msg), Buffer.from(signature, "hex"), this.keyPair);
   }
 
   getPublicKey(): string {
@@ -37,3 +37,17 @@ export function newWalletFromMnemonic(mnemonic: string) {
 export function didAddressToHex(didAddress: string): string {
   return Buffer.from(didAddress).toString("hex");
 }
+
+export function hexToArray(hexString: string) {
+  let byte = [];
+  let utf8Buffer = Buffer.from(hexString, "utf8");
+  for (var i = 0; i < utf8Buffer.length; i++) {
+    let byteTemp = utf8Buffer[i];
+    byte.push(byteTemp);
+  }
+  return byte;
+};
+
+
+
+
