@@ -5,8 +5,8 @@ import { Transaction } from "./transaction";
 import { PayloadParams } from "./contract";
 import {
   METHOD_ACCOUNT_GET_SM2_ADDRESS, METHOD_ACCOUNT_GET_BALANCE, METHOD_TX_GET_UNSIGN_DATA, METHOD_TX_SEND,
-  METHOD_CONTRACT_GET_INPUT_DATA, EVENT_SUB_TX, METHOD_DID_GET_ADDRESS, METHOD_DID_GET_REGISTER_UNSIGN_DATA, METHOD_DID_SEND_REGISTER_TX
-  , METHOD_DID_GET_DOCUMENT, METHOD_DID_GET_CHAIN_ID
+  METHOD_CONTRACT_GET_INPUT_DATA, EVENT_SUB_TX, METHOD_DID_GEN_ADDRESS, METHOD_DID_GET_REGISTER_UNSIGN_DATA, METHOD_DID_SEND_REGISTER_TX
+  , METHOD_DID_GET_DOCUMENT, METHOD_DID_GET_CHAIN_ID, METHOD_DID_GET_ADDRESS_STATUS
 } from "./constant";
 let NextId = 1;
 export type InflightRequest = {
@@ -112,7 +112,7 @@ export class HyperProvider {
   async getDIDAddress(): Promise<string> {
     if (this.didAddress) return this.didAddress;
     let publicKey = this.wallet.getPublicKey();
-    let didAddress = await (this.send(METHOD_DID_GET_ADDRESS, [publicKey]) as Promise<string>);
+    let didAddress = await (this.send(METHOD_DID_GEN_ADDRESS, [publicKey]) as Promise<string>);
     this.didAddress = didAddress;
     return this.didAddress;
   }
@@ -126,6 +126,10 @@ export class HyperProvider {
 
   async getDIDDocument(didAddress: string): Promise<string> {
     return this.send(METHOD_DID_GET_DOCUMENT, [didAddress]);
+  }
+
+  async getDIDStatus(didAddress: string): Promise<string> {
+    return this.send(METHOD_DID_GET_ADDRESS_STATUS, [didAddress]);
   }
 
   async getChainId(): Promise<string> {
