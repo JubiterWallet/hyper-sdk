@@ -8,6 +8,7 @@ export declare class HyperWallet {
     verify(msg: string, signature: string): boolean;
     getPublicKey(): string;
     fromateSM2Signature(signature: string): string;
+    computeZDigest(msg: string): string;
 }
 export declare function newWalletFromPrivateKey(privateKey: string): HyperWallet;
 export declare function newWalletFromMnemonic(mnemonic: string): HyperWallet;

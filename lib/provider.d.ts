@@ -24,7 +24,8 @@ export declare class HyperProvider {
     getAddress(): Promise<string>;
     getDIDAddress(): Promise<string>;
     registerDID(): Promise<string>;
-    getDIDDocument(didAddress: string): Promise<string>;
+    getDIDDocument(didAddress: string): Promise<any>;
+    getDIDStatus(didAddress: string): Promise<boolean>;
     getChainId(): Promise<string>;
     getBalance(address: string[]): Promise<any>;
     buildUnsignedTx(unsignedTx: Transaction, txType?: string): Promise<string>;
