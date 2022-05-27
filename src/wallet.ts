@@ -1,4 +1,4 @@
-import { SM2 } from "gm-ts";
+import { SM2, computeZDigest } from "gm-ts";
 import { ec } from 'elliptic';
 import { mnemonicToSeedSync } from 'bip39';
 
@@ -11,12 +11,14 @@ export class HyperWallet {
   }
 
   sign(msg: string) {
-    const sig = this.sm2.sign(hexToArray(msg), this.keyPair);
+    // let r = this.computeZDigest(msg);
+    const sig = this.sm2.sign(Buffer.from(msg, "hex"), this.keyPair);
     return this.fromateSM2Signature(sig.toDER("hex"));
   }
 
   verify(msg: string, signature: string): boolean {
-    return this.sm2.verify(hexToArray(msg), Buffer.from(signature, "hex"), this.keyPair);
+    let r = this.computeZDigest(msg);
+    return this.sm2.verify(Buffer.from(msg, "hex"), Buffer.from(signature, "hex"), this.keyPair);
   }
 
   getPublicKey(): string {
@@ -25,6 +27,17 @@ export class HyperWallet {
 
   fromateSM2Signature(signature: string): string {
     return "01" + this.getPublicKey() + signature;
+  }
+
+  computeZDigest(msg: string): string {
+    // let utf8Str = Buffer.from(msg, "hex").toString("utf8");
+    // let r = computeZDigest(utf8Str, this.keyPair, {
+    //   dataEncoding: 'utf8',
+    //   keyEncoding: 'hex',
+    //   hashEncoding: 'hex',
+    // });
+    // return r;
+    return ""
   }
 }
 
