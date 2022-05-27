@@ -124,12 +124,13 @@ export class HyperProvider {
     return this.send(METHOD_DID_SEND_REGISTER_TX, [{ "unsignData": unsignData, "signature": signature, "async": false }]);
   }
 
-  async getDIDDocument(didAddress: string): Promise<string> {
+  async getDIDDocument(didAddress: string): Promise<any> {
     return this.send(METHOD_DID_GET_DOCUMENT, [didAddress]);
   }
 
-  async getDIDStatus(didAddress: string): Promise<string> {
-    return this.send(METHOD_DID_GET_ADDRESS_STATUS, [didAddress]);
+  async getDIDStatus(didAddress: string): Promise<boolean> {
+    let didState = await this.send(METHOD_DID_GET_ADDRESS_STATUS, [didAddress]);
+    return (didState?.state == 1);
   }
 
   async getChainId(): Promise<string> {
