@@ -120,8 +120,10 @@ export class HyperProvider {
   async registerDID(): Promise<string> {
     let publicKey = this.wallet.getPublicKey();
     let unsignData = await (this.send(METHOD_DID_GET_REGISTER_UNSIGN_DATA, [publicKey]) as Promise<string>);
+    console.log("registerDID unsignData-------------->",unsignData);
     let signature = await this.wallet.sign(unsignData);
-    return this.send(METHOD_DID_SEND_REGISTER_TX, [{ "unsignData": unsignData, "signature": signature, "async": false }]);
+    console.log("registerDID signature-------------->",signature);
+   return this.send(METHOD_DID_SEND_REGISTER_TX, [{ "unsignData": unsignData, "signature": signature, "async": false }]);
   }
 
   async getDIDDocument(didAddress: string): Promise<any> {
