@@ -67,16 +67,19 @@ test('Provider registerDid  ', async () => {
     );
     const p = new HyperProvider('ws://192.168.4.196:6066/ws/v1/1111111', wallet);
     await p.open();
-    let chainId = await p.getChainId();
-    console.log("chainId----------->", chainId);
+    // let chainId = await p.getChainId();
+    // console.log("chainId----------->", chainId);
     let didAddress = await p.getDIDAddress();
     console.log("didAddress----------->", didAddress);
-    let didDocument = await p.getDIDDocument(didAddress);
-    console.log("didDocument----------->", didDocument);
-    let hash = await p.registerDID();
-    console.log("registerDid hash ----------->", hash);
-    didDocument = await p.getDIDDocument(didAddress);
-    console.log("didDocument----------->", didDocument);
-    console.log("didAddressToHex----------->", didAddressToHex(didAddress));
-    await p.destroy();
+    let state = await p.getDIDStatus(didAddress);
+    console.log("didAddress state ----------->", state);
+    if(!state){
+        let hash = await p.registerDID();
+        console.log("registerDid hash ----------->", hash);
+    }
+
+    // let didDocument = await p.getDIDDocument(didAddress);
+    // console.log("didDocument----------->", didDocument);
+    // console.log("didAddressToHex----------->", didAddressToHex(didAddress));
+    // await p.destroy();
 })
