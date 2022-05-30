@@ -12,6 +12,7 @@ export declare const METHOD_DID_SEND_REGISTER_TX = "did_sendRegisterTx";
 export declare const METHOD_DID_GET_CHAIN_ID = "did_getChainId";
 export declare const METHOD_DID_GET_DOCUMENT = "did_getDIDDocument";
 export declare const METHOD_DID_GET_ADDRESS_STATUS = "did_getAddressStatus";
+export declare const METHOD_DID_GET_ALL_CHAIN_ID = "did_allChainId";
 export declare const EVENT_SUB_TX = "tx";
 export declare const EVENT_SUB_BLOCK = "block";
 export declare const EVENT_SUB_NETWORK = "network";
@@ -28,6 +29,20 @@ export declare const TX_OPTIONAL_FIELD_EXTRA_ID_STRING = "extraIdString";
 export declare const TX_OPTIONAL_FIELD_PAYLOAD = "payload";
 export declare const TX_OPTIONAL_FIELD_OP_CODE = "opCode";
 export declare const TX_OPTIONAL_FIELD_HASH = "hash";
+export declare const TX_OPTIONAL_FIELD_INVALID_MSG = "invalidMsg";
+export declare const TX_OPTIONAL_FIELD_INVALID = "invalid";
 export declare enum ChainIDType {
-    "RedCave" = 0
+    "RedCave" = "RedCave",
+    "Cave" = "ReCave"
 }
+export declare enum TransactionSignPrefixType {
+    "ACCOUNT_SM" = "01",
+    "DID_SM" = "81"
+}
+export declare const STRING_HEX = "hex";
+export declare const STRING_UTF8 = "utf8";
+export declare const TX_SIGN_TYPE_DID_SM = "DID_SM";
+export declare const TX_SIGN_TYPE_ACCOUNT_SM = "ACCOUNT_SM";
+export declare const TX_SIGN_TYPE_ACCOUNT_SM_PREFIX = "01";
+export declare const TX_SIGN_TYPE_DID_SM_PREFIX = "81";
+export declare const DID_PREFIX = "did:hpc:";

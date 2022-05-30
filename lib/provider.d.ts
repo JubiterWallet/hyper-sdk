@@ -17,19 +17,22 @@ export declare class HyperProvider {
     };
     wallet: HyperWallet;
     address: string | null;
-    didAddress: string | null;
+    didAddress: {
+        [chainId: string]: string;
+    };
     constructor(url: string, wallet: HyperWallet);
     open(): Promise<any>;
     send(method: string, params?: Array<any>): Promise<any>;
     getAddress(): Promise<string>;
-    getDIDAddress(): Promise<string>;
-    registerDID(): Promise<string>;
+    getDIDAddress(chainId: string): Promise<string>;
+    registerDID(chainId: string): Promise<string>;
     getDIDDocument(didAddress: string): Promise<any>;
     getDIDStatus(didAddress: string): Promise<boolean>;
     getChainId(): Promise<string>;
+    getAllChainId(): Promise<any>;
     getBalance(address: string[]): Promise<any>;
     buildUnsignedTx(unsignedTx: Transaction, txType?: string): Promise<string>;
-    signTx(txRaw: string): Promise<string>;
+    signTx(txRaw: string, signType?: string): Promise<string>;
     signMessage(msg: string): Promise<string>;
     verifyMessage(msg: string, signature: string): Promise<boolean>;
     broadcastTx(tx: Transaction): Promise<string>;

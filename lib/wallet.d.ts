@@ -5,10 +5,10 @@ export declare class HyperWallet {
     keyPair: ec.KeyPair;
     sm2: SM2;
     constructor(privateKey: string);
-    sign(msg: string): string;
+    sign(msg: string, signType?: string): string;
     verify(msg: string, signature: string): boolean;
     getPublicKey(): string;
-    fromateSM2Signature(signature: string): string;
+    fromateSignature(signature: string, signType?: string): string;
     computeZDigest(msg: string): Buffer | string;
 }
 export declare function newWalletFromPrivateKey(privateKey: string): HyperWallet;
