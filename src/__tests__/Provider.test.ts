@@ -1,6 +1,6 @@
 import { HyperProvider, newWalletFromMnemonic, Transaction, PayloadParams } from '../index';
 import { didAddressToHex } from '../wallet';
-
+import { ChainIDType } from '../constant';
 test('My Provider', async () => {
     //   const wallet = newWalletFromMnemonic(
     //     'gauge hole clog property soccer idea cycle stadium utility slice hold chief',
@@ -16,7 +16,7 @@ test('My Provider', async () => {
     //   const raw = await p.buildUnsignedTx(transaction, "");
     //   console.log("tx raw ----------->", raw);
     //   // transaction.hex = raw;
-    //   // const signature = await p.signTx(raw);
+    //   const signature = await p.signTx(raw,undefined);
     //   // transaction.signature = signature;
     //   // console.log("signature ----------->", signature);
     //   // console.log("transaction ----------->",transaction);
@@ -62,21 +62,21 @@ test('My Provider', async () => {
 // })
 
 test('Provider registerDid  ', async () => {
-    const wallet = newWalletFromMnemonic(
-        'gauge hole clog property soccer idea cycle stadium utility slice hold chief',
-    );
-    const p = new HyperProvider('ws://192.168.4.196:6066/ws/v1/1111111', wallet);
-    await p.open();
-    // let chainId = await p.getChainId();
-    // console.log("chainId----------->", chainId);
-    let didAddress = await p.getDIDAddress();
-    console.log("didAddress----------->", didAddress);
-    let state = await p.getDIDStatus(didAddress);
-    console.log("didAddress state ----------->", state);
-    if(!state){
-        let hash = await p.registerDID();
-        console.log("registerDid hash ----------->", hash);
-    }
+    // const wallet = newWalletFromMnemonic(
+    //     'gauge hole clog property soccer idea cycle stadium utility slice hold chief',
+    // );
+    // const p = new HyperProvider('ws://192.168.4.196:6066/ws/v1/1111111', wallet);
+    // await p.open();
+    // let chainIds = await p.getAllChainId();
+    // console.log("chainIds----------->", chainIds);
+    // let didAddress = await p.getDIDAddress(ChainIDType.RedCave);
+    // console.log("didAddress----------->", didAddress);
+    // let state = await p.getDIDStatus(didAddress);
+    // console.log("didAddress state ----------->", state);
+    // if(!state){
+    //     let hash = await p.registerDID(ChainIDType.RedCave);
+    //     console.log("registerDid hash ----------->", hash);
+    // }
 
     // let didDocument = await p.getDIDDocument(didAddress);
     // console.log("didDocument----------->", didDocument);
