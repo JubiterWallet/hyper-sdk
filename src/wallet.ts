@@ -1,52 +1,56 @@
 import { SM2, computeZDigest } from "gm-ts";
 import { ec } from 'elliptic';
 import { mnemonicToSeedSync } from 'bip39';
-
+import {
+  TX_SIGN_TYPE_DID_SM,
+  TX_SIGN_TYPE_ACCOUNT_SM, TX_SIGN_TYPE_DID_SM_PREFIX,
+  TX_SIGN_TYPE_ACCOUNT_SM_PREFIX
+} from "./constant";
 export class HyperWallet {
   keyPair: ec.KeyPair;
   sm2: SM2;
   constructor(privateKey: string) {
     this.sm2 = new SM2();
-    this.keyPair = this.sm2.keyFromPrivate(privateKey,"hex");
+    this.keyPair = this.sm2.keyFromPrivate(privateKey, "hex");
   }
 
-  sign(msg: string) {
-   
-    console.log("public  X  -------------->",this.keyPair.getPublic().getX().toString("hex"));
-    console.log("public  Y-------------->",this.keyPair.getPublic().getY().toString("hex"));
-    console.log("sign msg -------------->",msg);
+  sign(msg: string, signType?: string) {
     let r = this.computeZDigest(msg);
     const sig = this.sm2.sign(r, this.keyPair);
-    console.log("sign r-------------->",sig.r.toString("hex"));
-    console.log("sign s-------------->",sig.s.toString("hex"));
-    console.log("sign toDER-------------->",sig.toDER("hex"));
-    // const sig = this.sm2.sign(Buffer.from(msg, "hex"), this.keyPair);
-    return this.fromateSM2Signature(sig.toDER("hex"));
+    return this.fromateSignature(sig.toDER("hex"), signType);
   }
 
   verify(msg: string, signature: string): boolean {
     let r = this.computeZDigest(msg);
     return this.sm2.verify(r, Buffer.from(signature, "hex"), this.keyPair);
-    // return this.sm2.verify(Buffer.from(msg, "hex"), Buffer.from(signature, "hex"), this.keyPair);
   }
 
   getPublicKey(): string {
     return this.keyPair.getPublic("hex").toString();
   }
 
-  fromateSM2Signature(signature: string): string {
-    return "01" + this.getPublicKey() + signature;
+  fromateSignature(signature: string, signType?: string): string {
+    if (!signType) {
+      return signature;
+    }
+    let prefix;
+    if (signType === TX_SIGN_TYPE_DID_SM) {
+      prefix = TX_SIGN_TYPE_DID_SM_PREFIX;
+    } else if (signType === TX_SIGN_TYPE_ACCOUNT_SM) {
+      prefix = TX_SIGN_TYPE_ACCOUNT_SM_PREFIX;
+    } else {
+      prefix = TX_SIGN_TYPE_ACCOUNT_SM_PREFIX;
+    }
+    return prefix + this.getPublicKey() + signature;
   }
 
-  computeZDigest(msg: string): Buffer|string {
+  computeZDigest(msg: string): Buffer | string {
     let utf8Str = Buffer.from(msg, "hex").toString("utf8");
-    console.log("sign msg utf8Str-------------->",utf8Str);
     let r = computeZDigest(utf8Str, this.keyPair, {
-      dataEncoding: 'utf8',
-      keyEncoding: 'hex',
-      hashEncoding: 'hex',
+      dataEncoding: "utf8",
+      keyEncoding: "hex",
+      hashEncoding: "hex",
     });
-    console.log("sign computeZDigest r-------------->",r);
     return r;
   }
 }
