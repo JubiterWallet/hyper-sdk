@@ -7,18 +7,27 @@ export class HyperWallet {
   sm2: SM2;
   constructor(privateKey: string) {
     this.sm2 = new SM2();
-    this.keyPair = this.sm2.keyFromPrivate(privateKey);
+    this.keyPair = this.sm2.keyFromPrivate(privateKey,"hex");
   }
 
   sign(msg: string) {
-    // let r = this.computeZDigest(msg);
-    const sig = this.sm2.sign(Buffer.from(msg, "hex"), this.keyPair);
+   
+    console.log("public  X  -------------->",this.keyPair.getPublic().getX().toString("hex"));
+    console.log("public  Y-------------->",this.keyPair.getPublic().getY().toString("hex"));
+    console.log("sign msg -------------->",msg);
+    let r = this.computeZDigest(msg);
+    const sig = this.sm2.sign(r, this.keyPair);
+    console.log("sign r-------------->",sig.r.toString("hex"));
+    console.log("sign s-------------->",sig.s.toString("hex"));
+    console.log("sign toDER-------------->",sig.toDER("hex"));
+    // const sig = this.sm2.sign(Buffer.from(msg, "hex"), this.keyPair);
     return this.fromateSM2Signature(sig.toDER("hex"));
   }
 
   verify(msg: string, signature: string): boolean {
     let r = this.computeZDigest(msg);
-    return this.sm2.verify(Buffer.from(msg, "hex"), Buffer.from(signature, "hex"), this.keyPair);
+    return this.sm2.verify(r, Buffer.from(signature, "hex"), this.keyPair);
+    // return this.sm2.verify(Buffer.from(msg, "hex"), Buffer.from(signature, "hex"), this.keyPair);
   }
 
   getPublicKey(): string {
@@ -29,15 +38,16 @@ export class HyperWallet {
     return "01" + this.getPublicKey() + signature;
   }
 
-  computeZDigest(msg: string): string {
-    // let utf8Str = Buffer.from(msg, "hex").toString("utf8");
-    // let r = computeZDigest(utf8Str, this.keyPair, {
-    //   dataEncoding: 'utf8',
-    //   keyEncoding: 'hex',
-    //   hashEncoding: 'hex',
-    // });
-    // return r;
-    return ""
+  computeZDigest(msg: string): Buffer|string {
+    let utf8Str = Buffer.from(msg, "hex").toString("utf8");
+    console.log("sign msg utf8Str-------------->",utf8Str);
+    let r = computeZDigest(utf8Str, this.keyPair, {
+      dataEncoding: 'utf8',
+      keyEncoding: 'hex',
+      hashEncoding: 'hex',
+    });
+    console.log("sign computeZDigest r-------------->",r);
+    return r;
   }
 }
 
@@ -54,13 +64,3 @@ export function newWalletFromMnemonic(mnemonic: string) {
 export function didAddressToHex(didAddress: string): string {
   return Buffer.from(didAddress).toString("hex");
 }
-
-export function hexToArray(hexString: string) {
-  let byte = [];
-  let utf8Buffer = Buffer.from(hexString, "utf8");
-  for (var i = 0; i < utf8Buffer.length; i++) {
-    let byteTemp = utf8Buffer[i];
-    byte.push(byteTemp);
-  }
-  return byte;
-};
