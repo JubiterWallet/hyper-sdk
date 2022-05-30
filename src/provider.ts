@@ -4,9 +4,12 @@ import { HyperWallet } from "./wallet";
 import { Transaction } from "./transaction";
 import { PayloadParams } from "./contract";
 import {
-  METHOD_ACCOUNT_GET_SM2_ADDRESS, METHOD_ACCOUNT_GET_BALANCE, METHOD_TX_GET_UNSIGN_DATA, METHOD_TX_SEND,
-  METHOD_CONTRACT_GET_INPUT_DATA, EVENT_SUB_TX, METHOD_DID_GEN_ADDRESS, METHOD_DID_GET_REGISTER_UNSIGN_DATA, METHOD_DID_SEND_REGISTER_TX
-  , METHOD_DID_GET_DOCUMENT, METHOD_DID_GET_CHAIN_ID, METHOD_DID_GET_ADDRESS_STATUS
+  METHOD_ACCOUNT_GET_SM2_ADDRESS, METHOD_ACCOUNT_GET_BALANCE,
+  METHOD_TX_GET_UNSIGN_DATA, METHOD_TX_SEND,
+  METHOD_CONTRACT_GET_INPUT_DATA, EVENT_SUB_TX,
+  METHOD_DID_GEN_ADDRESS, METHOD_DID_GET_REGISTER_UNSIGN_DATA, METHOD_DID_SEND_REGISTER_TX
+  , METHOD_DID_GET_DOCUMENT, METHOD_DID_GET_CHAIN_ID, METHOD_DID_GET_ADDRESS_STATUS, ChainIDType
+  , TX_SIGN_TYPE_DID_SM, METHOD_DID_GET_ALL_CHAIN_ID
 } from "./constant";
 let NextId = 1;
 export type InflightRequest = {
@@ -21,14 +24,14 @@ export class HyperProvider {
   events: { [tag: string]: HyperTxEvent | HyperEvent };
   wallet: HyperWallet;
   address: string | null;
-  didAddress: string | null;
+  didAddress: { [chainId: string]: string };
   constructor(url: string, wallet: HyperWallet) {
     this.requests = {};
     this.events = {};
     this.url = url;
     this.wallet = wallet;
     this.address = null;
-    this.didAddress = null;
+    this.didAddress = {};
   }
   open(): Promise<any> {
     return new Promise((resolve, reject) => {
@@ -109,21 +112,19 @@ export class HyperProvider {
     return this.address
   }
 
-  async getDIDAddress(): Promise<string> {
-    if (this.didAddress) return this.didAddress;
+  async getDIDAddress(chainId: string): Promise<string> {
+    if (this.didAddress[chainId]) return this.didAddress[chainId];
     let publicKey = this.wallet.getPublicKey();
-    let didAddress = await (this.send(METHOD_DID_GEN_ADDRESS, [publicKey]) as Promise<string>);
-    this.didAddress = didAddress;
-    return this.didAddress;
+    let didAddress = await (this.send(METHOD_DID_GEN_ADDRESS, [{ "pubKey": publicKey, "chainID": chainId }]) as Promise<string>);
+    this.didAddress[chainId] = didAddress;
+    return this.didAddress[chainId];
   }
 
-  async registerDID(): Promise<string> {
+  async registerDID(chainId: string): Promise<string> {
     let publicKey = this.wallet.getPublicKey();
-    let unsignData = await (this.send(METHOD_DID_GET_REGISTER_UNSIGN_DATA, [publicKey]) as Promise<string>);
-    console.log("registerDID unsignData-------------->",unsignData);
-    let signature = await this.wallet.sign(unsignData);
-    console.log("registerDID signature-------------->",signature);
-   return this.send(METHOD_DID_SEND_REGISTER_TX, [{ "unsignData": unsignData, "signature": signature, "async": false }]);
+    let unsignData = await (this.send(METHOD_DID_GET_REGISTER_UNSIGN_DATA, [{ "pubKey": publicKey, "chainID": chainId }]) as Promise<string>);
+    let signature = await this.wallet.sign(unsignData, TX_SIGN_TYPE_DID_SM);
+    return this.send(METHOD_DID_SEND_REGISTER_TX, [{ "unsignData": unsignData, "signature": signature, "async": false }]);
   }
 
   async getDIDDocument(didAddress: string): Promise<any> {
@@ -132,11 +133,14 @@ export class HyperProvider {
 
   async getDIDStatus(didAddress: string): Promise<boolean> {
     let didState = await this.send(METHOD_DID_GET_ADDRESS_STATUS, [didAddress]);
-    return (didState?.state == 1);
+    return (didState?.status === 1);
   }
 
   async getChainId(): Promise<string> {
     return this.send(METHOD_DID_GET_CHAIN_ID, []);
+  }
+  async getAllChainId(): Promise<any> {
+    return this.send(METHOD_DID_GET_ALL_CHAIN_ID, []);
   }
   async getBalance(address: string[]): Promise<any> {
     return this.send(METHOD_ACCOUNT_GET_BALANCE, address);
@@ -151,12 +155,12 @@ export class HyperProvider {
     return this.send(METHOD_TX_GET_UNSIGN_DATA, [unsignedTx]);
   }
 
-  async signTx(txRaw: string): Promise<string> {
-    return this.wallet.sign(txRaw);
+  async signTx(txRaw: string, signType?: string): Promise<string> {
+    return this.wallet.sign(txRaw, signType);
   }
 
   async signMessage(msg: string): Promise<string> {
-    return this.wallet.sign(msg);
+    return this.wallet.sign(msg, undefined);
   }
 
   async verifyMessage(msg: string, signature: string): Promise<boolean> {
