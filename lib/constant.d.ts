@@ -32,15 +32,12 @@ export declare const TX_OPTIONAL_FIELD_HASH = "hash";
 export declare const TX_OPTIONAL_FIELD_INVALID_MSG = "invalidMsg";
 export declare const TX_OPTIONAL_FIELD_INVALID = "invalid";
 export declare enum ChainIDType {
-    "RedCave" = "RedCave",
-    "Cave" = "ReCave"
+    "RedCave" = "RedCave"
 }
 export declare enum TransactionSignPrefixType {
     "ACCOUNT_SM" = "01",
     "DID_SM" = "81"
 }
-export declare const STRING_HEX = "hex";
-export declare const STRING_UTF8 = "utf8";
 export declare const TX_SIGN_TYPE_DID_SM = "DID_SM";
 export declare const TX_SIGN_TYPE_ACCOUNT_SM = "ACCOUNT_SM";
 export declare const TX_SIGN_TYPE_ACCOUNT_SM_PREFIX = "01";

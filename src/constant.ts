@@ -42,18 +42,15 @@ export const TX_OPTIONAL_FIELD_INVALID = "invalid";
 //
 export enum ChainIDType {
     "RedCave" = "RedCave",
-    "Cave" = "ReCave",
 }
 
 export enum TransactionSignPrefixType {
     "ACCOUNT_SM" = "01",
     "DID_SM" = "81",
 }
-
-export const STRING_HEX = "hex";
-export const STRING_UTF8 = "utf8";
-
+//SM account did 
 export const TX_SIGN_TYPE_DID_SM = "DID_SM";
+//SM account transfer
 export const TX_SIGN_TYPE_ACCOUNT_SM = "ACCOUNT_SM";
 
 export const TX_SIGN_TYPE_ACCOUNT_SM_PREFIX = "01";
