@@ -87,7 +87,7 @@ export class HyperProvider {
             } else {
               //code message
               if (result.code != 0) {
-                return request.callback(undefined, { error: result });
+                return request.callback(undefined, { error: { message: result } });
               }
               // let error: Error | null = null;
               // if (result.error) {
@@ -96,7 +96,7 @@ export class HyperProvider {
               // else {
               //   error = new Error('unknown error');
               // }
-              request.callback(undefined, { error: result.error.message || 'unknown error' });
+              request.callback(undefined, { error: { message: result.error.message || 'unknown error' } });
             }
           }
         };

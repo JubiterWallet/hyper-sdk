@@ -60,4 +60,4 @@ export const TX_SIGN_TYPE_DID_SM_PREFIX = "81";
 export const DID_PREFIX = "did:hpc:";
 
 // websoket not open 
-export const ERROR_CONNECTION_NOT_OPEN = '{ "error": "Please try again later" }';
+export const ERROR_CONNECTION_NOT_OPEN = { "error": { "message": "Please try again later" } };

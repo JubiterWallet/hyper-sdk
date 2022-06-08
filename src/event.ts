@@ -62,15 +62,17 @@ export class HyperTxEvent extends HyperEvent {
     //需要调rpc接口具体实现
     if (this.type == EVENT_SUB_TX) {
       let tx = await this.provider.send(METHOD_TX_GET_TX_BY_HASH, args[0])
-      //TODO transactin 状态判断
-      if(tx.blockHash){
+      if (!(tx?.error)) {
+        //TODO transactin 状态判断
+        if(tx.blockHash){
 
-      }
-      this.emit(this.tag, [tx]);
-      if (this.once) {
-        if (this._poller) {
-          clearInterval(this._poller);
-          this._poller = null;
+        }
+        this.emit(this.tag, [tx]);
+        if (this.once) {
+          if (this._poller) {
+            clearInterval(this._poller);
+            this._poller = null;
+          }
         }
       }
     }
