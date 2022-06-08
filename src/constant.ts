@@ -21,6 +21,7 @@ export const METHOD_DID_GET_ALL_CHAIN_ID = "did_allChainId";
 export const EVENT_SUB_TX = "tx";
 export const EVENT_SUB_BLOCK = "block";
 export const EVENT_SUB_NETWORK = "network";
+export const EVENT_SUB_STATUS = "status";
 export const EVENT_SUB_ADDRESS = "address";
 
 //tx optional fields
@@ -57,3 +58,6 @@ export const TX_SIGN_TYPE_ACCOUNT_SM_PREFIX = "01";
 export const TX_SIGN_TYPE_DID_SM_PREFIX = "81";
 
 export const DID_PREFIX = "did:hpc:";
+
+// websoket not open 
+export const ERROR_CONNECTION_NOT_OPEN = '{ "error": "Please try again later" }';

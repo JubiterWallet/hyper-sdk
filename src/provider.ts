@@ -9,14 +9,17 @@ import {
   METHOD_CONTRACT_GET_INPUT_DATA, EVENT_SUB_TX,
   METHOD_DID_GEN_ADDRESS, METHOD_DID_GET_REGISTER_UNSIGN_DATA, METHOD_DID_SEND_REGISTER_TX
   , METHOD_DID_GET_DOCUMENT, METHOD_DID_GET_CHAIN_ID, METHOD_DID_GET_ADDRESS_STATUS, ChainIDType
-  , TX_SIGN_TYPE_DID_SM, METHOD_DID_GET_ALL_CHAIN_ID
+  , TX_SIGN_TYPE_DID_SM, METHOD_DID_GET_ALL_CHAIN_ID, ERROR_CONNECTION_NOT_OPEN
 } from "./constant";
 let NextId = 1;
 export type InflightRequest = {
   callback: (error: any, result: any) => void;
   payload: string;
 };
-
+export type Options = {
+  delay: number,
+  maxAttempts: boolean | number,
+};
 export class HyperProvider {
   ws?: WebSocket;
   url: string;
@@ -25,29 +28,51 @@ export class HyperProvider {
   wallet: HyperWallet;
   address: string | null;
   didAddress: { [chainId: string]: string };
-  constructor(url: string, wallet: HyperWallet) {
+  reconnectAttempts: 0;
+  reconnecting: boolean;
+  options?: Options
+  constructor(url: string, wallet: HyperWallet, options?: Options
+  ) {
     this.requests = {};
     this.events = {};
     this.url = url;
     this.wallet = wallet;
     this.address = null;
     this.didAddress = {};
+    this.reconnectAttempts = 0;
+    this.reconnecting = false;
+    this.options = options || {
+      delay: 5000,
+      maxAttempts: false,
+    };
   }
   open(): Promise<any> {
     return new Promise((resolve, reject) => {
       if (this.ws == undefined) {
         this.ws = new WebSocket(this.url);
         this.ws.onopen = (e: any) => {
+          this.reconnecting = false;
+          this.reconnectAttempts = 0;
           console.log('open successed');
           resolve(e);
         };
-        this.ws.onerror = (e: any) => {
-          console.log('open failed');
+        this.ws.onerror = async (e: any) => {
+          console.log('open failed', e);
+          if (this.reconnecting || this.ws?.readyState === WebSocket.CLOSED) {
+            return;
+          }
           reject(e);
         };
-        this.ws.onclose = (e: any) => {
-          // console.log('close');
-          reject(e);
+        this.ws.onclose = async (e: any) => {
+          //https://developer.mozilla.org/en-US/docs/Web/API/CloseEvent/code
+          // console.log('close', e.code);
+          if (1000 != e.code || 1001 != e.code || e.wasClean === false) {// 1006
+            this.ws = undefined;
+            await this.reconnect();
+            return;
+          } else {
+            resolve(true);
+          }
         };
         this.ws.onmessage = (messageEvent: any) => {
           const data = messageEvent.data as string;
@@ -75,12 +100,15 @@ export class HyperProvider {
             }
           }
         };
+
       }
     });
   }
   send(method: string, params?: Array<any>): Promise<any> {
     const rid = NextId++;
-
+    if (this.reconnecting || this.ws === undefined || this.ws?.readyState !== this.ws?.CONNECTING) {
+      return new Promise((resolve) => { resolve(ERROR_CONNECTION_NOT_OPEN) });
+    }
     return new Promise((resolve, reject) => {
       function callback(error: Error | null, result: any) {
         if (error) {
@@ -211,5 +239,25 @@ export class HyperProvider {
       // See: https://developer.mozilla.org/en-US/docs/Web/API/CloseEvent#Status_codes
       this.ws.close(1000);
     }
+  }
+
+  async reconnect(): Promise<void> {
+    var _this = this;
+    this.reconnecting = true;
+    if (!this.options?.maxAttempts ||
+      this.reconnectAttempts < this.options?.maxAttempts
+    ) {
+      _this.reconnectAttempts++;
+      await setTimeout(async function () {
+        return await _this.open();
+      }, this.options?.delay);
+    } else {
+      this.reconnecting = false;
+      return;
+    }
+  }
+
+  async connected(): Promise<boolean> {
+    return (this.ws != undefined && this.ws.readyState === WebSocket.CONNECTING);
   }
 }
