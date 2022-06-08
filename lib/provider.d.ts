@@ -6,6 +6,10 @@ export declare type InflightRequest = {
     callback: (error: any, result: any) => void;
     payload: string;
 };
+export declare type Options = {
+    delay: number;
+    maxAttempts: boolean | number;
+};
 export declare class HyperProvider {
     ws?: WebSocket;
     url: string;
@@ -20,7 +24,10 @@ export declare class HyperProvider {
     didAddress: {
         [chainId: string]: string;
     };
-    constructor(url: string, wallet: HyperWallet);
+    reconnectAttempts: 0;
+    reconnecting: boolean;
+    options?: Options;
+    constructor(url: string, wallet: HyperWallet, options?: Options);
     open(): Promise<any>;
     send(method: string, params?: Array<any>): Promise<any>;
     getAddress(): Promise<string>;
@@ -40,4 +47,6 @@ export declare class HyperProvider {
     subscribe(type: EventType, tag: string, listener: Listener, once: boolean, ...args: Array<any>): void;
     unsubscribe(tag: string): void;
     destroy(): Promise<void>;
+    reconnect(): Promise<void>;
+    connected(): Promise<boolean>;
 }
