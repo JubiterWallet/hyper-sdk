@@ -44,4 +44,8 @@ export declare const TX_SIGN_TYPE_ACCOUNT_SM = "ACCOUNT_SM";
 export declare const TX_SIGN_TYPE_ACCOUNT_SM_PREFIX = "01";
 export declare const TX_SIGN_TYPE_DID_SM_PREFIX = "81";
 export declare const DID_PREFIX = "did:hpc:";
-export declare const ERROR_CONNECTION_NOT_OPEN = "{ \"error\": \"Please try again later\" }";
+export declare const ERROR_CONNECTION_NOT_OPEN: {
+    error: {
+        message: string;
+    };
+};

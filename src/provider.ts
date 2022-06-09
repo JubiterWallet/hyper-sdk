@@ -1,5 +1,5 @@
 // import { WebSocket } from "ws";
-import { EventType, HyperEvent, Listener, HyperTxEvent } from "./event";
+import { EventType, HyperEvent, Listener, HyperTxEvent, HyperStatusEvent } from "./event";
 import { HyperWallet } from "./wallet";
 import { Transaction } from "./transaction";
 import { PayloadParams } from "./contract";
@@ -9,7 +9,7 @@ import {
   METHOD_CONTRACT_GET_INPUT_DATA, EVENT_SUB_TX,
   METHOD_DID_GEN_ADDRESS, METHOD_DID_GET_REGISTER_UNSIGN_DATA, METHOD_DID_SEND_REGISTER_TX
   , METHOD_DID_GET_DOCUMENT, METHOD_DID_GET_CHAIN_ID, METHOD_DID_GET_ADDRESS_STATUS, ChainIDType
-  , TX_SIGN_TYPE_DID_SM, METHOD_DID_GET_ALL_CHAIN_ID, ERROR_CONNECTION_NOT_OPEN
+  , TX_SIGN_TYPE_DID_SM, METHOD_DID_GET_ALL_CHAIN_ID, ERROR_CONNECTION_NOT_OPEN, EVENT_SUB_STATUS
 } from "./constant";
 let NextId = 1;
 export type InflightRequest = {
@@ -207,6 +207,10 @@ export class HyperProvider {
   subscribe(type: EventType, tag: string, listener: Listener, once: boolean, ...args: Array<any>) {
     if (type === EVENT_SUB_TX) {
       let event = new HyperTxEvent(type, tag, listener, once, this);
+      event.on(args);
+      this.events[tag] = event;
+    } else if (type === EVENT_SUB_STATUS) {
+      let event = new HyperStatusEvent(type, tag, listener, once, this);
       event.on(args);
       this.events[tag] = event;
     }

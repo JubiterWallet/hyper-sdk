@@ -1,11 +1,11 @@
 import { HyperProvider } from "./provider";
-import { METHOD_TX_GET_TX_BY_HASH, EVENT_SUB_BLOCK, EVENT_SUB_TX, EVENT_SUB_ADDRESS, EVENT_SUB_NETWORK, METHOD_BLOCK_GET_LATEST_BLOCK } from "./constant";
+import { METHOD_TX_GET_TX_BY_HASH, EVENT_SUB_BLOCK, EVENT_SUB_TX, EVENT_SUB_ADDRESS, EVENT_SUB_NETWORK, METHOD_BLOCK_GET_LATEST_BLOCK, EVENT_SUB_STATUS } from "./constant";
 
 export interface EventFilter {
   address?: string;
   topics?: Array<string | Array<string> | null>;
 }
-export type EventType = "tx" | "block" | "network";
+export type EventType = "tx" | "block" | "network" | "status";
 
 export type Listener = (...args: Array<any>) => void;
 
@@ -64,7 +64,7 @@ export class HyperTxEvent extends HyperEvent {
       let tx = await this.provider.send(METHOD_TX_GET_TX_BY_HASH, args[0])
       if (!(tx?.error)) {
         //TODO transactin 状态判断
-        if(tx.blockHash){
+        if (tx.blockHash) {
 
         }
         this.emit(this.tag, [tx]);
@@ -73,6 +73,21 @@ export class HyperTxEvent extends HyperEvent {
             clearInterval(this._poller);
             this._poller = null;
           }
+        }
+      }
+    }
+  }
+}
+
+export class HyperStatusEvent extends HyperEvent {
+  async poll(...args: Array<any>): Promise<void> {
+    if (this.type == EVENT_SUB_STATUS) {
+      let status = await this.provider.connected();
+      this.emit(this.tag, status);
+      if (this.once) {
+        if (this._poller) {
+          clearInterval(this._poller);
+          this._poller = null;
         }
       }
     }

@@ -4,7 +4,7 @@ export interface EventFilter {
     address?: string;
     topics?: Array<string | Array<string> | null>;
 }
-export declare type EventType = "tx" | "block" | "network";
+export declare type EventType = "tx" | "block" | "network" | "status";
 export declare type Listener = (...args: Array<any>) => void;
 export declare class HyperEvent {
     readonly listener: Listener;
@@ -21,5 +21,8 @@ export declare class HyperEvent {
     clear(): void;
 }
 export declare class HyperTxEvent extends HyperEvent {
+    poll(...args: Array<any>): Promise<void>;
+}
+export declare class HyperStatusEvent extends HyperEvent {
     poll(...args: Array<any>): Promise<void>;
 }

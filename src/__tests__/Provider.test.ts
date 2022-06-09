@@ -1,7 +1,7 @@
 import { HyperProvider, newWalletFromMnemonic, Transaction, PayloadParams } from '../index';
 import { didAddressToHex } from '../wallet';
 import { ChainIDType } from '../constant';
-test('My Provider', async () => {
+// test('My Provider', async () => {
     //   const wallet = newWalletFromMnemonic(
     //     'gauge hole clog property soccer idea cycle stadium utility slice hold chief',
     //   );
@@ -23,7 +23,7 @@ test('My Provider', async () => {
     //   // const txid = await p.broadcastTx(transaction);
     //   // console.log("txid ----------->", txid);
     //   // await p.destroy();
-});
+// });
 
 // jest.spyOn(global, 'setTimeout');
 // jest.useFakeTimers();
@@ -40,6 +40,13 @@ test('My Provider', async () => {
 //     expect(result[0]?.hash).toEqual('0x16f0d104a1eedc8a7cc0c77c83e7bbd0bf4da532270eceee9445e05e902f2170');
 //     p.unsubscribe(hash);
 //   }, true,[hash]);
+//   p.subscribe("status", "from_extensions" , (result) => {
+//       console.log(result)
+//       if(!result){
+//       //TODO 
+//   
+//       }
+//   }, false,[]);
 //   jest.advanceTimersByTime(2000);
 // })
 
@@ -61,7 +68,7 @@ test('My Provider', async () => {
 //   expect(payload).toEqual("0xac9023630000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000047465737400000000000000000000000000000000000000000000000000000000")
 // })
 
-test('Provider registerDid  ', async () => {
+// test('Provider registerDid  ', async () => {
     // const wallet = newWalletFromMnemonic(
     //     'gauge hole clog property soccer idea cycle stadium utility slice hold chief',
     // );
@@ -82,4 +89,4 @@ test('Provider registerDid  ', async () => {
     // console.log("didDocument----------->", didDocument);
     // console.log("didAddressToHex----------->", didAddressToHex(didAddress));
     // await p.destroy();
-})
+// });
