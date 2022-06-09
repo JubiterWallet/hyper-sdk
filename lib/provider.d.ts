@@ -30,11 +30,11 @@ export declare class HyperProvider {
     constructor(url: string, wallet: HyperWallet, options?: Options);
     open(): Promise<any>;
     send(method: string, params?: Array<any>): Promise<any>;
-    getAddress(): Promise<string>;
-    getDIDAddress(chainId: string): Promise<string>;
-    registerDID(chainId: string): Promise<string>;
+    getAddress(): Promise<string | any>;
+    getDIDAddress(chainId: string): Promise<string | any>;
+    registerDID(chainId: string): Promise<string | any>;
     getDIDDocument(didAddress: string): Promise<any>;
-    getDIDStatus(didAddress: string): Promise<boolean>;
+    getDIDStatus(didAddress: string): Promise<boolean | any>;
     getChainId(): Promise<string>;
     getAllChainId(): Promise<any>;
     getBalance(address: string[]): Promise<any>;
