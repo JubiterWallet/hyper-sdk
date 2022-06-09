@@ -8,7 +8,7 @@ import {
   METHOD_TX_GET_UNSIGN_DATA, METHOD_TX_SEND,
   METHOD_CONTRACT_GET_INPUT_DATA, EVENT_SUB_TX,
   METHOD_DID_GEN_ADDRESS, METHOD_DID_GET_REGISTER_UNSIGN_DATA, METHOD_DID_SEND_REGISTER_TX
-  , METHOD_DID_GET_DOCUMENT, METHOD_DID_GET_CHAIN_ID, METHOD_DID_GET_ADDRESS_STATUS, ChainIDType
+  , METHOD_DID_GET_DOCUMENT, METHOD_DID_GET_CHAIN_ID, METHOD_DID_GET_ADDRESS_STATUS
   , TX_SIGN_TYPE_DID_SM, METHOD_DID_GET_ALL_CHAIN_ID, ERROR_CONNECTION_NOT_OPEN, EVENT_SUB_STATUS
 } from "./constant";
 let NextId = 1;
@@ -87,7 +87,7 @@ export class HyperProvider {
             } else {
               //code message
               if (result.code != 0) {
-                return request.callback(undefined, { error: { message: result } });
+                return request.callback(undefined, { error: result });
               }
               // let error: Error | null = null;
               // if (result.error) {
@@ -106,7 +106,7 @@ export class HyperProvider {
   }
   send(method: string, params?: Array<any>): Promise<any> {
     const rid = NextId++;
-    if (this.reconnecting || this.ws === undefined || this.ws?.readyState !== this.ws?.CONNECTING) {
+    if (this.reconnecting || this.ws === undefined || this.ws?.readyState !== WebSocket.CONNECTING) {
       return new Promise((resolve) => { resolve(ERROR_CONNECTION_NOT_OPEN) });
     }
     return new Promise((resolve, reject) => {
@@ -133,24 +133,34 @@ export class HyperProvider {
     });
   }
 
-  async getAddress(): Promise<string> {
+  async getAddress(): Promise<string | any> {
     if (this.address) return this.address;
     const publicKey = this.wallet.getPublicKey();
-    this.address = await (this.send(METHOD_ACCOUNT_GET_SM2_ADDRESS, [publicKey]) as Promise<string>);
-    return this.address
+    let address = await this.send(METHOD_ACCOUNT_GET_SM2_ADDRESS, [publicKey]);
+    if (!!address?.error) {
+      return address;
+    }
+    this.address = address;
+    return this.address;
   }
 
-  async getDIDAddress(chainId: string): Promise<string> {
+  async getDIDAddress(chainId: string): Promise<string | any> {
     if (this.didAddress[chainId]) return this.didAddress[chainId];
     let publicKey = this.wallet.getPublicKey();
-    let didAddress = await (this.send(METHOD_DID_GEN_ADDRESS, [{ "pubKey": publicKey, "chainID": chainId }]) as Promise<string>);
+    let didAddress = await this.send(METHOD_DID_GEN_ADDRESS, [{ "pubKey": publicKey, "chainID": chainId }]);
+    if (!!didAddress?.error) {
+      return didAddress;
+    }
     this.didAddress[chainId] = didAddress;
     return this.didAddress[chainId];
   }
 
-  async registerDID(chainId: string): Promise<string> {
+  async registerDID(chainId: string): Promise<string | any> {
     let publicKey = this.wallet.getPublicKey();
-    let unsignData = await (this.send(METHOD_DID_GET_REGISTER_UNSIGN_DATA, [{ "pubKey": publicKey, "chainID": chainId }]) as Promise<string>);
+    let unsignData = await this.send(METHOD_DID_GET_REGISTER_UNSIGN_DATA, [{ "pubKey": publicKey, "chainID": chainId }]);
+    if (!!unsignData?.error) {
+      return unsignData;
+    }
     let signature = await this.wallet.sign(unsignData, TX_SIGN_TYPE_DID_SM);
     return this.send(METHOD_DID_SEND_REGISTER_TX, [{ "unsignData": unsignData, "signature": signature, "async": false }]);
   }
@@ -159,7 +169,7 @@ export class HyperProvider {
     return this.send(METHOD_DID_GET_DOCUMENT, [didAddress]);
   }
 
-  async getDIDStatus(didAddress: string): Promise<boolean> {
+  async getDIDStatus(didAddress: string): Promise<boolean | any> {
     let didState = await this.send(METHOD_DID_GET_ADDRESS_STATUS, [didAddress]);
     return (didState?.status === 1);
   }
