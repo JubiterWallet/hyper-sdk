@@ -1,6 +1,6 @@
 import { SM2, computeZDigest } from "gm-ts";
 import { ec } from 'elliptic';
-import { mnemonicToSeedSync, generateMnemonic } from 'bip39';
+import { mnemonicToSeedSync, generateMnemonic, validateMnemonic } from 'bip39';
 import {
   TX_SIGN_TYPE_DID_SM,
   TX_SIGN_TYPE_ACCOUNT_SM, TX_SIGN_TYPE_DID_SM_PREFIX,
@@ -71,4 +71,8 @@ export function didAddressToHex(didAddress: string): string {
 
 export function genMnemonic(): string {
   return generateMnemonic();
+}
+
+export function verifyMnemonic(mnemonic: string): boolean {
+  return validateMnemonic(mnemonic);
 }

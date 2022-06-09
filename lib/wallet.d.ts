@@ -15,3 +15,4 @@ export declare function newWalletFromPrivateKey(privateKey: string): HyperWallet
 export declare function newWalletFromMnemonic(mnemonic: string): HyperWallet;
 export declare function didAddressToHex(didAddress: string): string;
 export declare function genMnemonic(): string;
+export declare function verifyMnemonic(mnemonic: string): boolean;
