@@ -106,7 +106,7 @@ export class HyperProvider {
   }
   send(method: string, params?: Array<any>): Promise<any> {
     const rid = NextId++;
-    if (this.reconnecting || this.ws === undefined || this.ws?.readyState !== WebSocket.CONNECTING) {
+    if (this.reconnecting || this.ws === undefined || this.ws?.readyState !== WebSocket.OPEN) {
       return new Promise((resolve) => { resolve(ERROR_CONNECTION_NOT_OPEN) });
     }
     return new Promise((resolve, reject) => {
@@ -272,6 +272,6 @@ export class HyperProvider {
   }
 
   async connected(): Promise<boolean> {
-    return (this.ws != undefined && this.ws.readyState === WebSocket.CONNECTING);
+    return (this.ws != undefined && this.ws.readyState === WebSocket.OPEN);
   }
 }
