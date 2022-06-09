@@ -1,6 +1,6 @@
 import { SM2, computeZDigest } from "gm-ts";
 import { ec } from 'elliptic';
-import { mnemonicToSeedSync } from 'bip39';
+import { mnemonicToSeedSync, generateMnemonic } from 'bip39';
 import {
   TX_SIGN_TYPE_DID_SM,
   TX_SIGN_TYPE_ACCOUNT_SM, TX_SIGN_TYPE_DID_SM_PREFIX,
@@ -67,4 +67,8 @@ export function newWalletFromMnemonic(mnemonic: string) {
 
 export function didAddressToHex(didAddress: string): string {
   return Buffer.from(didAddress).toString("hex");
+}
+
+export function genMnemonic(): string {
+  return generateMnemonic();
 }
