@@ -228,8 +228,10 @@ export class HyperProvider {
 
   unsubscribe(tag: string) {
     const event = this.events[tag];
-    event.clear();
-    delete this.events[tag];
+    if (event) {
+      event.clear();
+      delete this.events[tag];
+    }
   }
 
   async destroy(): Promise<void> {
