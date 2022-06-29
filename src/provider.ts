@@ -236,7 +236,7 @@ export class HyperProvider {
     return this.send(METHOD_ACCOUNT_CHECK_KYC, [publicKey]);
   }
 
-  async getAassets(param: PageParams & { contractAddress?: string }): Promise<any> {
+  async getAssets(param: PageParams & { contractAddress?: string }): Promise<any> {
     let didAddress = await this.getDIDAddress();
     return this.send(METHOD_ASSET_GET_BY_DID, [{
       did: didAddress,
@@ -246,7 +246,7 @@ export class HyperProvider {
     }]);
   }
 
-  async getAassetTransferHis(param: PageParams & { assetId: number, contractAddress: string }): Promise<any> {
+  async getAssetTransferHis(param: PageParams & { assetId: number, contractAddress: string }): Promise<any> {
     return this.send(METHOD_ASSET_GET_TRANSFER_HISTORY, [{
       assetId: param.assetId,
       contractAddress: param.contractAddress,

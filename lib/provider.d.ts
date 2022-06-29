@@ -53,10 +53,10 @@ export declare class HyperProvider {
     preRegister(params: RegisterParams): Promise<string | any>;
     register(id: string, verifyCode: number): Promise<boolean | any>;
     checkRegister(): Promise<boolean>;
-    getAassets(param: PageParams & {
+    getAssets(param: PageParams & {
         contractAddress?: string;
     }): Promise<any>;
-    getAassetTransferHis(param: PageParams & {
+    getAssetTransferHis(param: PageParams & {
         assetId: number;
         contractAddress: string;
     }): Promise<any>;
