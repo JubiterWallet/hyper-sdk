@@ -108,9 +108,9 @@ describe('test gen account register Account and DID ', () => {
 
 // describe('test query account asserts', () => {
 //     test('Assert  ################### ', async () => {
-//         let assets = await p.getAassets({ contractAddress: "", pageNum: 1, pageSize: 10 });
+//         let assets = await p.getAssets({ contractAddress: "", pageNum: 1, pageSize: 10 });
 //         console.log(" assets ----------->", assets);
-//         let assetHistory = await p.getAassetTransferHis({ assetId: 944, contractAddress: "0x0f99e56cc174bcbd6d43b7c9b553de990c80e3c7", pageNum: 1, pageSize: 10 });
+//         let assetHistory = await p.getAssetTransferHis({ assetId: 944, contractAddress: "0x0f99e56cc174bcbd6d43b7c9b553de990c80e3c7", pageNum: 1, pageSize: 10 });
 //         console.log(" assetHistorys ----------->", assetHistory);
 //     });
 // });
