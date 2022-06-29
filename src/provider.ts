@@ -10,7 +10,6 @@ import {
   METHOD_DID_GEN_ADDRESS, METHOD_DID_GET_REGISTER_UNSIGN, DEFAULT_PAGE_SIZE, METHOD_TX_GET_RECEIPT_BY_HASH,
   TX_SIGN_TYPE_DID_SM, METHOD_DID_GET_ALL_CHAIN_ID, ERROR_CONNECTION_NOT_OPEN, EVENT_SUB_STATUS, SECOND
 } from "./constant";
-let NextId = 1;
 export type InflightRequest = {
   callback: (error: any, result: any) => void;
   payload: string;
@@ -84,8 +83,8 @@ export class HyperProvider {
         };
         this.ws.onmessage = (messageEvent: any) => {
           let data = messageEvent.data as string;
-          // JSON.parse large numbers 
-          data = data.replace(/:s*([0-9]{15,})s*(,?)/g, ': "$1" $2'); 
+          // JSON.parse large number 
+          data = data.replace(/:s*([0-9]{15,})s*(,?)/g, ': "$1" $2');
           const result = JSON.parse(data);
           if (result.id != null) {
             const id = String(result.id);
@@ -108,7 +107,7 @@ export class HyperProvider {
     });
   }
   send(method: string, params?: Array<any>): Promise<any> {
-    const rid = NextId++;
+    const rid = this.getTimestamp();
     if (this.reconnecting || this.ws === undefined || this.ws?.readyState !== WebSocket.OPEN) {
       return new Promise((resolve) => { resolve(ERROR_CONNECTION_NOT_OPEN) });
     }
@@ -203,11 +202,11 @@ export class HyperProvider {
   }
 
   async sendTx(tx: Transaction, contractAddress?: string): Promise<Transaction | any> {
-    return this.send(METHOD_TX_SEND, [{ "txJson": tx, "contractAddress": contractAddress || "", "async": false }]);
+    return this.send(METHOD_TX_SEND, [{ "txJson": tx, "contractAddress": contractAddress || "" }]);
   }
 
   async sendTxAsync(tx: Transaction, contractAddress?: string): Promise<Transaction | any> {
-    return this.send(METHOD_TX_SEND_ASYNC, [{ "txJson": tx, "contractAddress": contractAddress || "", "async": false }]);
+    return this.send(METHOD_TX_SEND_ASYNC, [{ "txJson": tx, "contractAddress": contractAddress || "" }]);
   }
 
   async getTxReceipt(txHash: string): Promise<any> {
