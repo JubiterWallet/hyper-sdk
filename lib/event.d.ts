@@ -14,7 +14,7 @@ export declare class HyperEvent {
     readonly interval: number;
     readonly provider: HyperProvider;
     _poller: NodeJS.Timer | null;
-    constructor(type: EventType, tag: string, listener: Listener, once: boolean, provider: HyperProvider);
+    constructor(type: EventType, tag: string, listener: Listener, once: boolean, provider: HyperProvider, interval?: number);
     on(...args: Array<any>): void;
     poll(...args: Array<any>): Promise<void>;
     emit(eventName: String, ...args: Array<any>): boolean;
@@ -24,5 +24,5 @@ export declare class HyperTxEvent extends HyperEvent {
     poll(...args: Array<any>): Promise<void>;
 }
 export declare class HyperStatusEvent extends HyperEvent {
-    poll(...args: Array<any>): Promise<void>;
+    poll(): Promise<void>;
 }

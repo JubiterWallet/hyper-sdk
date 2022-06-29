@@ -10,6 +10,15 @@ export declare type Options = {
     delay: number;
     maxAttempts: boolean | number;
 };
+export declare type RegisterParams = {
+    name: string;
+    idCardNo: string;
+    mobile: string;
+};
+export declare type PageParams = {
+    pageSize: number;
+    pageNum: number;
+};
 export declare class HyperProvider {
     ws?: WebSocket;
     url: string;
@@ -21,9 +30,7 @@ export declare class HyperProvider {
     };
     wallet: HyperWallet;
     address: string | null;
-    didAddress: {
-        [chainId: string]: string;
-    };
+    didAddress: string | null;
     reconnectAttempts: 0;
     reconnecting: boolean;
     options?: Options;
@@ -31,22 +38,32 @@ export declare class HyperProvider {
     open(): Promise<any>;
     send(method: string, params?: Array<any>): Promise<any>;
     getAddress(): Promise<string | any>;
-    getDIDAddress(chainId: string): Promise<string | any>;
-    registerDID(chainId: string): Promise<string | any>;
-    getDIDDocument(didAddress: string): Promise<any>;
-    getDIDStatus(didAddress: string): Promise<boolean | any>;
-    getChainId(): Promise<string>;
+    getDIDAddress(): Promise<string | any>;
+    registerDID(): Promise<Transaction | any>;
+    getRegistedDIDAddress(): Promise<string | any>;
     getAllChainId(): Promise<any>;
-    getBalance(address: string[]): Promise<any>;
-    buildUnsignedTx(unsignedTx: Transaction, txType?: string): Promise<string>;
+    buildUnsignedTx(unsignedTx: Transaction, txType?: string): Promise<any>;
     signTx(txRaw: string, signType?: string): Promise<string>;
     signMessage(msg: string): Promise<string>;
     verifyMessage(msg: string, signature: string): Promise<boolean>;
-    broadcastTx(tx: Transaction): Promise<string>;
+    sendTx(tx: Transaction, contractAddress?: string): Promise<Transaction | any>;
+    sendTxAsync(tx: Transaction, contractAddress?: string): Promise<Transaction | any>;
+    getTxReceipt(txHash: string): Promise<any>;
     buildContractPayload(payload: PayloadParams): Promise<string>;
-    subscribe(type: EventType, tag: string, listener: Listener, once: boolean, ...args: Array<any>): void;
+    preRegister(params: RegisterParams): Promise<string | any>;
+    register(id: string, verifyCode: number): Promise<boolean | any>;
+    checkRegister(): Promise<boolean>;
+    getAassets(param: PageParams & {
+        contractAddress?: string;
+    }): Promise<any>;
+    getAassetTransferHis(param: PageParams & {
+        assetId: number;
+        contractAddress: string;
+    }): Promise<any>;
+    subscribe(type: EventType, tag: string, listener: Listener, once: boolean, interval?: number, ...args: Array<any>): void;
     unsubscribe(tag: string): void;
     destroy(): Promise<void>;
     reconnect(): Promise<void>;
     connected(): Promise<boolean>;
+    getTimestamp(): number;
 }

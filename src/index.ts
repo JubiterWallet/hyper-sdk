@@ -3,3 +3,4 @@ export * from './provider';
 export * from './wallet';
 export * from './transaction';
 export * from './contract';
+export * from './network';

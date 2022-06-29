@@ -1,5 +1,5 @@
 import { HyperProvider } from "./provider";
-import { METHOD_TX_GET_TX_BY_HASH, EVENT_SUB_BLOCK, EVENT_SUB_TX, EVENT_SUB_ADDRESS, EVENT_SUB_NETWORK, METHOD_BLOCK_GET_LATEST_BLOCK, EVENT_SUB_STATUS } from "./constant";
+import { METHOD_TX_GET_RECEIPT_BY_HASH, EVENT_SUB_TX, EVENT_SUB_STATUS, SECOND } from "./constant";
 
 export interface EventFilter {
   address?: string;
@@ -18,12 +18,12 @@ export class HyperEvent {
   readonly interval: number;
   readonly provider: HyperProvider;
   _poller: NodeJS.Timer | null;
-  constructor(type: EventType, tag: string, listener: Listener, once: boolean, provider: HyperProvider) {
+  constructor(type: EventType, tag: string, listener: Listener, once: boolean, provider: HyperProvider, interval?: number) {
     this.listener = listener;
     this.tag = tag;
     this.once = once;
     this.type = type;
-    this.interval = 1000;
+    this.interval = interval || SECOND;
     this._poller = null;
     this.provider = provider;
   }
@@ -61,12 +61,13 @@ export class HyperTxEvent extends HyperEvent {
   async poll(...args: Array<any>): Promise<void> {
     //需要调rpc接口具体实现
     if (this.type == EVENT_SUB_TX) {
-      let tx = await this.provider.send(METHOD_TX_GET_TX_BY_HASH, args[0])
+      let tx = await this.provider.getTxReceipt(args[0])
       if (!(tx?.error)) {
         //TODO transactin 状态判断
-        if (tx.blockHash) {
+        if (tx) {
 
         }
+        //合约调用
         this.emit(this.tag, [tx]);
         if (this.once) {
           if (this._poller) {
@@ -80,7 +81,7 @@ export class HyperTxEvent extends HyperEvent {
 }
 
 export class HyperStatusEvent extends HyperEvent {
-  async poll(...args: Array<any>): Promise<void> {
+  async poll(): Promise<void> {
     if (this.type == EVENT_SUB_STATUS) {
       let status = await this.provider.connected();
       this.emit(this.tag, status);

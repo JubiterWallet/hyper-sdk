@@ -2,9 +2,8 @@ import { SM2, computeZDigest } from "gm-ts";
 import { ec } from 'elliptic';
 import { mnemonicToSeedSync, generateMnemonic, validateMnemonic } from 'bip39';
 import {
-  TX_SIGN_TYPE_DID_SM,
-  TX_SIGN_TYPE_ACCOUNT_SM, TX_SIGN_TYPE_DID_SM_PREFIX,
-  TX_SIGN_TYPE_ACCOUNT_SM_PREFIX
+  TX_SIGN_TYPE_DID_SM, TX_SIGN_TYPE_ACCOUNT_SM, TX_SIGN_TYPE_DID_SM_PREFIX,
+  TX_SIGN_TYPE_ACCOUNT_SM_PREFIX, TX_SIGN_TYPE_DEFAULT_SM
 } from "./constant";
 export class HyperWallet {
   keyPair: ec.KeyPair;
@@ -30,7 +29,7 @@ export class HyperWallet {
   }
 
   fromateSignature(signature: string, signType?: string): string {
-    if (!signType) {
+    if (!signType || signType === TX_SIGN_TYPE_DEFAULT_SM) {
       return signature;
     }
     let prefix;
