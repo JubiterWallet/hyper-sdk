@@ -227,7 +227,7 @@ export class HyperProvider {
     return this.send(METHOD_ACCOUNT_PRE_KYC, [{ "address": didAddress, "publicKey": publicKey, "name": name, "idCardNo": idCardNo, "mobile": mobile, "timestamp": timestamp, "identitySign": identitySign }]);
   }
 
-  async register(id: string, verifyCode: number): Promise<boolean | any> {
+  async register(id: string, verifyCode: string): Promise<boolean | any> {
     return this.send(METHOD_ACCOUNT_KYC, [{ "id": id, "verifyCode": verifyCode }]);
   }
 

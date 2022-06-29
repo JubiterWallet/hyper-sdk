@@ -40,24 +40,24 @@ describe('test gen account register Account and DID ', () => {
         if (!isRegister) {
             let res = await p.preRegister({ idCardNo: idCardNo, mobile: mobile, name: name });
             console.log("pre register id is ----------->", res);
-            let result = await p.register(res, 111111);
+            let result = await p.register("4f4bed482946591c3c4539c271c2777c", "111111");
             console.log("register result ----------->", result);
         }
     });
-    test('account register Did  ################### ', async () => {
-        let registedDIDAddress = await p.getRegistedDIDAddress();
-        console.log("registed DID address ----------->", registedDIDAddress);
-        // if (!registedDIDAddress) {
-        let tx = await p.registerDID();
-        if (!!tx?.error) {
-            console.log("register DID error ----------->", tx);
-        } else {
-            console.log("register DID result ----------->", tx);
-            let txReceipt = await p.getTxReceipt(tx.hash);
-            console.log("tx receipt result ----------->", txReceipt);
-        }
-        // }
-    });
+    // test('account register Did  ################### ', async () => {
+    //     let registedDIDAddress = await p.getRegistedDIDAddress();
+    //     console.log("registed DID address ----------->", registedDIDAddress);
+    //     // if (!registedDIDAddress) {
+    //     let tx = await p.registerDID();
+    //     if (!!tx?.error) {
+    //         console.log("register DID error ----------->", tx);
+    //     } else {
+    //         console.log("register DID result ----------->", tx);
+    //         let txReceipt = await p.getTxReceipt(tx.hash);
+    //         console.log("tx receipt result ----------->", txReceipt);
+    //     }
+    //     // }
+    // });
 });
 // describe('test account transaction | did transaction  send ', () => {
 //     test('build Contract Payload  ###################', async () => {
