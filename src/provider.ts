@@ -173,7 +173,7 @@ export class HyperProvider {
     return unsignTx
   }
 
-  async getRegistedDIDAddress(): Promise<string | any> {
+  async getRegistedDIDAddress(): Promise<any> {
     let publicKey = this.wallet.getPublicKey();
     return this.send(METHOD_DID_GET_BY_PUBKEY, [publicKey]);
   }

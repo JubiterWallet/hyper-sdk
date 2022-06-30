@@ -40,7 +40,7 @@ export declare class HyperProvider {
     getAddress(): Promise<string | any>;
     getDIDAddress(): Promise<string | any>;
     registerDID(): Promise<Transaction | any>;
-    getRegistedDIDAddress(): Promise<string | any>;
+    getRegistedDIDAddress(): Promise<any>;
     getAllChainId(): Promise<any>;
     buildUnsignedTx(unsignedTx: Transaction, txType?: string): Promise<any>;
     signTx(txRaw: string, signType?: string): Promise<string>;
@@ -51,7 +51,7 @@ export declare class HyperProvider {
     getTxReceipt(txHash: string): Promise<any>;
     buildContractPayload(payload: PayloadParams): Promise<string>;
     preRegister(params: RegisterParams): Promise<string | any>;
-    register(id: string, verifyCode: number): Promise<boolean | any>;
+    register(id: string, verifyCode: string): Promise<boolean | any>;
     checkRegister(): Promise<boolean>;
     getAssets(param: PageParams & {
         contractAddress?: string;

@@ -4,16 +4,18 @@ const URL = 'ws://192.168.4.196:6066/ws/v1/' + APIKEY;
 // let mnemonic = "tiny picture cool cabbage tiger wonder describe toddler illness puppy purpose april";
 // let mnemonic = "virtual project reopen scale water stairs tiger rain organ short parent shine";
 // let mnemonic = "squeeze practice assume draw dumb expire strong often energy saddle common urban";
-// let mnemonic = "tornado employ author ready say supply trim program rug rich direct follow";
+let mnemonic = "tornado employ author ready say supply trim program rug rich direct follow";
 // let mnemonic = "mass flag moon short dinner first stamp urban voyage fox renew goat";
 // let mnemonic = "play drill office elevator mirror rocket muffin drink prefer despair kiwi tree";
 // let mnemonic = "gadget author taste have interest illegal purity lonely view drink obey tornado";
 // let mnemonic = "anxiety leg diet history glance sunny forward waste crouch town industry sure";
-let mnemonic = "amateur method client regular neutral solve genuine error wear purse flame oak";
+// let mnemonic = "amateur method client regular neutral solve genuine error wear purse flame oak";
+// let mnemonic = "exchange mass uniform require tag paddle despair sell decade sport cycle cabbage";
+
 let wallet: HyperWallet;
 let p: HyperProvider;
 beforeAll(async () => {
-    mnemonic = genMnemonic();
+    // mnemonic = genMnemonic();
     console.log("wallet mnemonic----------->", mnemonic);
     wallet = newWalletFromMnemonic(
         mnemonic
@@ -44,20 +46,20 @@ describe('test gen account register Account and DID ', () => {
             console.log("register result ----------->", result);
         }
     });
-    // test('account register Did  ################### ', async () => {
-    //     let registedDIDAddress = await p.getRegistedDIDAddress();
-    //     console.log("registed DID address ----------->", registedDIDAddress);
-    //     // if (!registedDIDAddress) {
-    //     let tx = await p.registerDID();
-    //     if (!!tx?.error) {
-    //         console.log("register DID error ----------->", tx);
-    //     } else {
-    //         console.log("register DID result ----------->", tx);
-    //         let txReceipt = await p.getTxReceipt(tx.hash);
-    //         console.log("tx receipt result ----------->", txReceipt);
-    //     }
-    //     // }
-    // });
+    test('account register Did  ################### ', async () => {
+        let registedDIDAddress = await p.getRegistedDIDAddress();
+        console.log("registed DID address ----------->", registedDIDAddress);
+        if (registedDIDAddress?.isCochain != 1) {
+            let tx = await p.registerDID();
+            if (!!tx?.error) {
+                console.log("register DID error ----------->", tx);
+            } else {
+                console.log("register DID result ----------->", tx);
+                let txReceipt = await p.getTxReceipt(tx.hash);
+                console.log("tx receipt result ----------->", txReceipt);
+            }
+        }
+    });
 });
 // describe('test account transaction | did transaction  send ', () => {
 //     test('build Contract Payload  ###################', async () => {
